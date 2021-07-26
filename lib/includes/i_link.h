@@ -1,8 +1,10 @@
-#ifndef ABSTRACT_LINK_H
-#define ABSTRACT_LINK_H
+#ifndef I_LINK_H
+#define I_LINK_H
 
 #include "types.h"
 #include <boost/asio.hpp>
+
+using namespace boost::asio;
 
 //TODO: parametrize this sizes and remove mavlink ref
 namespace
@@ -13,26 +15,21 @@ const int MAX_MTU = 1500;
 
 namespace loodsman
 {
-enum class link_type
-{
-    UDP,
-    TCP,
-    SERIAL
-};
 
-class AbstractLink
+class ILink
 {
 public:
-    virtual ~AbstractLink() = default;
+    virtual ~ILink() = default;
     virtual int send(const bytearray_t& data) = 0;
     virtual bytearray_t receive() = 0;
 
+    virtual void open() = 0;
+    virtual void close() = 0;
+
 protected:
-    boost::asio::io_context m_io;
+    io_context m_io;
 
 };
 
-using link_ptr = std::shared_ptr<loodsman::AbstractLink>;
-
 } // namespace loodsman
-#endif // ABSTRACT_LINK_H
+#endif //I_LINK_H
