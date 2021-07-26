@@ -21,12 +21,13 @@ public:
 private:
     boost::asio::ip::udp::socket m_socket;
     boost::asio::ip::udp::endpoint m_local_endpoint;
+    boost::asio::ip::udp::endpoint m_remote_endpoint;
+    byte_t m_buffer[MAX_PACKET_LENGTH];
+    // ports and addresses are not needed here, but temporary kept forlegacy purposes
     const uint m_local_port;
     const std::string m_local_address{"127.0.0.1"};
-    boost::asio::ip::udp::endpoint m_remote_endpoint;
     int m_remote_port;
     std::string m_remote_address;
-    byte_t m_buffer[MAX_PACKET_LENGTH];
 
 };
 } // namespace 
