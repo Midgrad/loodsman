@@ -31,3 +31,11 @@
 *.out
 *.app
 .vscode/settings.json
+
+CMakeLists.txt.user*
+/build*
+/release
+/debug
+
+#Mac
+.DS_Store

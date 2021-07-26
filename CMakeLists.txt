@@ -2,6 +2,10 @@
 cmake_minimum_required(VERSION 3.7.2)
 cmake_policy(VERSION 3.4.1)
 
+if (NOT DEFINED CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
+
 # Project
 set(PROJECT_NAME "loodsman")
 project(${PROJECT_NAME})
@@ -22,6 +26,11 @@ file(GLOB SOURCES "sources/*.h" "sources/*.hpp" "sources/*.cpp")
 target_sources(${PROJECT_NAME} PRIVATE ${SOURCES})
 target_include_directories(${PROJECT_NAME} PUBLIC includes )
 
-#target_link_libraries(${PROJECT_NAME} )
+if (NOT DEFINED Boost_LIBRARIES)
+    FIND_PACKAGE(Boost REQUIRED)
+    INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
+endif()
+
+target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 
 #add_subdirectory()
