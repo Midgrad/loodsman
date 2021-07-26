@@ -4,9 +4,9 @@ using namespace loodsman;
 
 UdpLink::UdpLink(int local_port):
 m_local_endpoint(ip::udp::v4(), local_port),
-m_socket(m_io)
+m_socket(m_io,m_local_endpoint)
 {
-    this->open();
+    // this->open();
 }
 
 UdpLink::UdpLink(const std::string& remote_address, int remote_port):

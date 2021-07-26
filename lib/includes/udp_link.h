@@ -23,10 +23,10 @@ public:
     bytearray_t receive() override;
 
 private:
-    boost::asio::ip::udp::socket m_socket;
     boost::asio::ip::udp::endpoint m_local_endpoint;
     boost::asio::ip::udp::endpoint m_remote_endpoint;
     byte_t m_buffer[MAX_PACKET_LENGTH];
+    boost::asio::ip::udp::socket m_socket;
 };
 } // namespace 
 #endif // UDP_LINK_H
