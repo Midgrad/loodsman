@@ -3,11 +3,17 @@
 using namespace loodsman;
 
 UdpLink::UdpLink(int local_port):
-m_local_port(local_port), 
 m_local_endpoint(boost::asio::ip::udp::v4(), local_port),
 m_socket(m_io)
 {
+    m_socket.open(boost::asio::ip::udp::v4());
+}
 
+UdpLink::UdpLink(std::string remote_address, int remote_port):
+m_remote_endpoint(boost::asio::ip::make_address(remote_address), remote_port),
+m_socket(m_io)
+{
+    m_socket.open(boost::asio::ip::udp::v4());
 }
 
 bytearray_t UdpLink::receive()

@@ -15,22 +15,18 @@ set(PROJECT_VERSION_MAJOR 0)
 set(PROJECT_VERSION_MINOR 0)
 set(PROJECT_VERSION_PATCH 0)
 
-# Includes
-#include()
-
-# Library type
-add_library(${PROJECT_NAME} STATIC "")
-
-# Internal core sources and headers
-file(GLOB SOURCES "sources/*.h" "sources/*.hpp" "sources/*.cpp")
-target_sources(${PROJECT_NAME} PRIVATE ${SOURCES})
-target_include_directories(${PROJECT_NAME} PUBLIC includes )
-
 if (NOT DEFINED Boost_LIBRARIES)
     FIND_PACKAGE(Boost REQUIRED)
     INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
 endif()
 
-target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
+# target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 
-#add_subdirectory()
+add_subdirectory(lib)
+
+option(TESTS_ENABLED "Enable tests" ON)
+
+# Tests
+if(TESTS_ENABLED)
+    add_subdirectory(tests)
+endif(TESTS_ENABLED)

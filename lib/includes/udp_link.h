@@ -10,7 +10,7 @@ class UdpLink final : public AbstractLink
 {
 public:
     UdpLink(int local_port);
-    UdpLink();
+    UdpLink(std::string remote_address, int remote_port);
 
     std::string address() const;
     uint32_t port() const;
@@ -24,7 +24,7 @@ private:
     boost::asio::ip::udp::endpoint m_remote_endpoint;
     byte_t m_buffer[MAX_PACKET_LENGTH];
     // ports and addresses are not needed here, but temporary kept forlegacy purposes
-    const uint m_local_port;
+    const uint m_local_port{0};
     const std::string m_local_address{"127.0.0.1"};
     int m_remote_port;
     std::string m_remote_address;
