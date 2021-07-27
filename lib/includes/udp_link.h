@@ -13,8 +13,11 @@ public:
     UdpLink(const std::string& remote_address, int remote_port);
     ~UdpLink();
 
-    std::string address() const;
-    uint port() const;
+    std::string localAddress() const;
+    uint localPort() const;
+
+    std::string remoteAddress() const;
+    uint remotePort() const;
 
     void open() override;
     void close() override;
@@ -23,7 +26,6 @@ public:
     bytearray_t receive() override;
 
 private:
-    boost::asio::ip::udp::endpoint m_local_endpoint;
     boost::asio::ip::udp::endpoint m_remote_endpoint;
     byte_t m_buffer[MAX_PACKET_LENGTH];
     boost::asio::ip::udp::socket m_socket;
