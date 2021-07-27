@@ -20,7 +20,7 @@ class ILink
 {
 public:
     virtual ~ILink() = default;
-    virtual int send(const bytearray_t& data) = 0;
+    virtual std::size_t send(const bytearray_t& data) = 0;
     virtual bytearray_t receive() = 0;
 
     virtual void open() = 0;

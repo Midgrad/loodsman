@@ -14,12 +14,12 @@ public:
     ~UdpLink();
 
     std::string address() const;
-    uint32_t port() const;
+    uint port() const;
 
     void open() override;
     void close() override;
 
-    int send(const bytearray_t& data) override;
+    std::size_t send(const bytearray_t& data) override;
     bytearray_t receive() override;
 
 private:
