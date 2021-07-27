@@ -5,14 +5,6 @@
 #include <boost/asio.hpp>
 
 using namespace boost::asio;
-
-//TODO: parametrize this sizes and remove mavlink ref
-namespace
-{
-const int MAX_PACKET_LENGTH = 500; //Presumably, max length of the atomic send/receive in a ordinary network
-const int MAX_MTU = 1500;
-} // namespace
-
 namespace loodsman
 {
 

@@ -5,6 +5,13 @@
 #include <string>
 #include <list>
 
+//TODO: parametrize in cmake
+namespace
+{
+const int MAX_PACKET_LENGTH = 500; //Presumably, max length of the atomic send/receive in a ordinary network
+const int MAX_MTU = 1500;
+} // namespace
+
 namespace loodsman
 {
 
