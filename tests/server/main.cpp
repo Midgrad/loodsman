@@ -10,7 +10,9 @@ int main()
     std::cout << "Start!" << endl;;
 
     std::cout << "Creating receiver" << endl;;
-    loodsman::UdpLink link_listen(5000);
+
+    loodsman::UdpLink link_listen(5002);
+
 
     std::cout << "Local endpoint is " << link_listen.localAddress() << ":" << link_listen.localPort() << endl;    
 

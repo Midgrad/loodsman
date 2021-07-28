@@ -19,13 +19,17 @@ public:
     std::string remoteAddress() const;
     uint remotePort() const;
 
-    void open() override;
-    void close() override;
+    int open() override;
+    int close() override;
 
     std::size_t send(const bytearray_t& data) override;
     bytearray_t receive() override;
 
 private:
+
+    int bind(int port);
+    int connect(const std::string& remote_address, int remote_port);
+
     boost::asio::ip::udp::endpoint m_remote_endpoint;
     byte_t m_buffer[MAX_PACKET_LENGTH];
     boost::asio::ip::udp::socket m_socket;

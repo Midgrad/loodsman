@@ -1,18 +1,25 @@
 #include "udp_link.h"
+#include <iostream>
 
 using namespace loodsman;
 
+//TODO: #7 Constructor should not fail! Remove init from it
 UdpLink::UdpLink(int local_port):
-m_socket(m_io,boost::asio::ip::udp::endpoint(ip::udp::v4(), local_port))
+m_socket(m_io)
 {
+    int error_code = 0;
 
+    error_code = open();
+    error_code = bind(local_port);
 }
 
 UdpLink::UdpLink(const std::string& remote_address, int remote_port):
-m_remote_endpoint(ip::make_address(remote_address), remote_port),
-m_socket(m_io,ip::udp::v4())
+m_socket(m_io)
 {
+    int error_code = 0;
 
+    error_code = open();
+    m_remote_endpoint = boost::asio::ip::udp::endpoint(ip::make_address(remote_address), remote_port);
 }
 
 UdpLink::~UdpLink()
@@ -20,14 +27,38 @@ UdpLink::~UdpLink()
     this->close();
 }
 
-void UdpLink::open()
+int UdpLink::open()
 {
-    m_socket.open(ip::udp::v4());
+    boost::system::error_code error;
+    m_socket.open(ip::udp::v4(), error);
+    if(error.value()) debug_print(error.message());
+    return error.value();
 }
 
-void UdpLink::close()
+int UdpLink::close()
 {
+    boost::system::error_code error;        
     m_socket.close();
+    if(error.value()) debug_print(error.message());
+    return error.value();
+}
+
+int UdpLink::bind(int port)
+{
+    boost::system::error_code error;
+    m_socket.bind(boost::asio::ip::udp::endpoint(ip::udp::v4(), port), error);
+    if(error.value()) debug_print(error.message());
+    return error.value();
+}
+
+// Presumably used to permanently bind socket to a remote address, and prevent changes. 
+// may be helpful if we would use immutable objects
+int UdpLink::connect(const std::string& address, int port)
+{
+    boost::system::error_code error;
+    m_socket.connect(boost::asio::ip::udp::endpoint(ip::make_address(address), port), error);
+    if(error.value()) debug_print(error.message());
+    return error.value();
 }
 
 std::string UdpLink::localAddress() const

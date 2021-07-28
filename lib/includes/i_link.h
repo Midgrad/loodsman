@@ -16,8 +16,8 @@ public:
     virtual std::size_t send(const bytearray_t& data) = 0;
     virtual bytearray_t receive() = 0;
 
-    virtual void open() = 0;
-    virtual void close() = 0;
+    virtual int open() = 0;
+    virtual int close() = 0;
 
 protected:
     io_context m_io;

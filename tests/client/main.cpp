@@ -14,7 +14,7 @@ int main()
     std::cout << "Start!" << endl;;
 
     std::cout << "Creating sender" << endl;;
-    loodsman::UdpLink link_sender("127.0.0.1",5000);
+    loodsman::UdpLink link_sender("127.0.0.1",5002);
 
     std::cout << "Local endpoint is " << link_sender.localAddress() << ":" << link_sender.localPort() << endl;
     std::cout << "Remote endpoint is " << link_sender.remoteAddress() << ":" << link_sender.remotePort() << endl;
