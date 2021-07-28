@@ -6,13 +6,15 @@ if (NOT DEFINED CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 14)
 endif()
 
+# add_compile_options(-Wall -fPIC -O1)
+
 # Project
 set(PROJECT_NAME "loodsman")
 project(${PROJECT_NAME})
 
 # Versions
 set(PROJECT_VERSION_MAJOR 0)
-set(PROJECT_VERSION_MINOR 0)
+set(PROJECT_VERSION_MINOR 2)
 set(PROJECT_VERSION_PATCH 0)
 
 if (NOT DEFINED Boost_LIBRARIES)

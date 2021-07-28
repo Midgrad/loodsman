@@ -21,8 +21,16 @@ void debug_print(const std::string& message)
 } // namespace
 
 //TODO: disuss moving to nameless namespace
+
 namespace loodsman
 {
+
+enum class link_type
+{
+    udp,
+    tcp,
+    serial
+};
 
 using byte_t = char;
 using bytearray_t = std::basic_string<byte_t>;

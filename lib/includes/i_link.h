@@ -4,7 +4,6 @@
 #include "types.h"
 #include <boost/asio.hpp>
 
-using namespace boost::asio;
 namespace loodsman
 {
 
@@ -20,9 +19,11 @@ public:
     virtual int close() = 0;
 
 protected:
-    io_context m_io;
+    boost::asio::io_context m_io;
 
 };
+
+using link_ptr = std::shared_ptr<ILink>;
 
 } // namespace loodsman
 #endif //I_LINK_H

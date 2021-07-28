@@ -2,6 +2,7 @@
 #include <iostream>
 
 using namespace loodsman;
+using namespace boost::asio;
 
 //TODO: #7 Constructor should not fail! Remove init from it
 UdpLink::UdpLink(int local_port):
@@ -19,9 +20,10 @@ m_socket(m_io)
     int error_code = 0;
 
     error_code = open();
-    m_remote_endpoint = boost::asio::ip::udp::endpoint(ip::make_address(remote_address), remote_port);
+    m_remote_endpoint = ip::udp::endpoint(ip::make_address(remote_address), remote_port);
 }
 
+//TODO:: return to the default or write the proper one
 UdpLink::~UdpLink()
 {
     this->close();
@@ -46,7 +48,7 @@ int UdpLink::close()
 int UdpLink::bind(int port)
 {
     boost::system::error_code error;
-    m_socket.bind(boost::asio::ip::udp::endpoint(ip::udp::v4(), port), error);
+    m_socket.bind(ip::udp::endpoint(ip::udp::v4(), port), error);
     if(error.value()) debug_print(error.message());
     return error.value();
 }
@@ -56,7 +58,7 @@ int UdpLink::bind(int port)
 int UdpLink::connect(const std::string& address, int port)
 {
     boost::system::error_code error;
-    m_socket.connect(boost::asio::ip::udp::endpoint(ip::make_address(address), port), error);
+    m_socket.connect(ip::udp::endpoint(ip::make_address(address), port), error);
     if(error.value()) debug_print(error.message());
     return error.value();
 }
@@ -96,5 +98,3 @@ std::size_t UdpLink::send(const bytearray_t& data)
     std::size_t bytes_transferred = m_socket.send_to(buffer(data, data_size), m_remote_endpoint);
     return bytes_transferred;
 }
-
-using link_ptr = std::shared_ptr<loodsman::ILink>;
