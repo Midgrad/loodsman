@@ -3,24 +3,29 @@
 // #include "tcp_link.h"
 #include "udp_link.h"
 
-loodsman::link_ptr loodsman::factory(loodsman::link_type type, int port, std::string address)
+using namespace loodsman;
+
+link_ptr factory(link_type type, int local_port, std::string local_address = "0.0.0.0", int remote_port = NULL, std::string remote_address = "")
 {
+    link_ptr l_link = nullptr;
     switch (type)
     {
         case link_type::udp:
-            if(address == "0.0.0.0")
+
+            try 
             {
-                return static_cast<link_ptr>(std::make_shared<UdpLink>(port));
+                l_link = static_cast<link_ptr>(std::make_shared<UdpLink>(local_port));
             }
-            else
+            catch (...)
             {
-                return static_cast<link_ptr>(std::make_shared<UdpLink>(address,port));
+                debug_print("Generic error");
             }
-            // return nullptr;
+                 
+            return l_link;
             break;
         default:
             debug_print("Unknown link type!");
-            return nullptr;
+            return l_link;
             break;
     }
 }

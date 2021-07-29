@@ -4,29 +4,10 @@
 using namespace loodsman;
 using namespace boost::asio;
 
-//TODO: #7 Constructor should not fail! Remove init from it
-UdpLink::UdpLink(int local_port):
-m_socket(m_io)
+UdpLink::UdpLink(int local_port, std::string local_address, int remote_port, std::string remote_address):
+m_socket(m_io,ip::udp::endpoint(ip::make_address(local_address), local_port))
 {
-    int error_code = 0;
-
-    error_code = open();
-    error_code = bind(local_port);
-}
-
-UdpLink::UdpLink(const std::string& remote_address, int remote_port):
-m_socket(m_io)
-{
-    int error_code = 0;
-
-    error_code = open();
     m_remote_endpoint = ip::udp::endpoint(ip::make_address(remote_address), remote_port);
-}
-
-//TODO:: return to the default or write the proper one
-UdpLink::~UdpLink()
-{
-    this->close();
 }
 
 int UdpLink::open()

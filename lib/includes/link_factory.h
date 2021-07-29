@@ -5,8 +5,10 @@
 
 namespace loodsman
 {
-    
-link_ptr factory(link_type type, int port, std::string address = "0.0.0.0");
+
+using link_ptr = std::shared_ptr<ILink>;
+
+link_ptr factory(link_type type, int local_port, std::string local_address = "0.0.0.0", int remote_port = NULL, std::string remote_address = "");
 
 } // namespace 
 #endif // LINK_FACTORY_H
