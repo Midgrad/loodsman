@@ -13,7 +13,13 @@ int main()
 
     std::cout << "Creating receiver" << endl;;
 
-    link_ptr link_listen = factory(link_type::udp, 5002);
+    link_ptr link_listen = factory(link_type::udp, 5000);
+
+    if (link_listen == nullptr)
+    {
+        cout <<  "fabrication failed" << endl;
+        exit(-1);
+    }
 
     // std::cout << "Local endpoint is " << link_listen->localAddress() << ":" << link_listen->localPort() << endl;    
 

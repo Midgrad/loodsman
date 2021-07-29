@@ -15,7 +15,7 @@ int main()
     std::cout << "Start!" << endl;;
 
     std::cout << "Creating sender" << endl;;
-    link_ptr link_sender = factory(link_type::udp, 5002, "127.0.0.1");
+    link_ptr link_sender = factory(link_type::udp, 5001, "0.0.0.0", 5000, "127.0.0.1");
 
     // loodsman::UdpLink link_sender("127.0.0.1",5002);
 

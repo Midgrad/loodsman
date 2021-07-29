@@ -5,7 +5,7 @@
 
 using namespace loodsman;
 
-link_ptr factory(link_type type, int local_port, std::string local_address = "0.0.0.0", int remote_port = NULL, std::string remote_address = "")
+link_ptr loodsman::factory(link_type type, int local_port, std::string local_address, int remote_port, std::string remote_address)
 {
     link_ptr l_link = nullptr;
     switch (type)
@@ -14,7 +14,7 @@ link_ptr factory(link_type type, int local_port, std::string local_address = "0.
 
             try 
             {
-                l_link = static_cast<link_ptr>(std::make_shared<UdpLink>(local_port));
+                l_link = static_cast<link_ptr>(std::make_shared<UdpLink>(local_port,local_address,remote_port,remote_address));
             }
             catch (...)
             {
