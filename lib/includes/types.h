@@ -20,7 +20,7 @@ void debug_print(const std::string& message)
 
 } // namespace
 
-//TODO: disuss moving to nameless namespace
+//TODO: discuss moving to nameless namespace
 
 namespace loodsman
 {
