@@ -9,8 +9,7 @@ endif()
 # add_compile_options(-Wall -fPIC -O1)
 
 # Project
-set(PROJECT_NAME "loodsman")
-project(${PROJECT_NAME})
+project(loodsman)
 
 # Versions
 set(PROJECT_VERSION_MAJOR 0)
