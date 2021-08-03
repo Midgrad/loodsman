@@ -9,12 +9,9 @@ endif()
 # add_compile_options(-Wall -fPIC -O1)
 
 # Project
-project(loodsman)
-
-# Versions
-set(PROJECT_VERSION_MAJOR 0)
-set(PROJECT_VERSION_MINOR 3)
-set(PROJECT_VERSION_PATCH 1)
+project(loodsman VERSION 0.3.1
+        DESCRIPTION "Cross-platform udp,tcp and serial connection library"
+        HOMEPAGE_URL "https://github.com/Midgrad/loodsman")
 
 if (NOT DEFINED Boost_LIBRARIES)
     FIND_PACKAGE(Boost REQUIRED)

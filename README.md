@@ -1,2 +1,2 @@
 # loodsman
-Cross platform udp,tcp and serial connection library
+Cross-platform udp,tcp and serial connection library
