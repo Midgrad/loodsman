@@ -12,8 +12,8 @@ class ILink
 public:
     virtual ~ILink() = default;
 
-    virtual std::size_t send(const bytearray_t& data) = 0;
-    virtual bytearray_t receive() = 0;
+    virtual std::size_t send(const bytearray_t& data, boost::system::error_code& errorCode) = 0;
+    virtual bytearray_t receive(boost::system::error_code& errorCode) = 0;
 
     virtual int open() = 0;
     virtual int close() = 0;

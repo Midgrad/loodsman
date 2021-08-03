@@ -20,8 +20,8 @@ public:
     std::string remoteAddress() const;
     uint remotePort() const;
 
-    std::size_t send(const bytearray_t& data) override;
-    bytearray_t receive() override;
+    std::size_t send(const bytearray_t& data, boost::system::error_code& errorCode) override;
+    bytearray_t receive(boost::system::error_code& errorCode) override;
 
 private:
 
@@ -30,7 +30,7 @@ private:
 
     boost::asio::io_context m_io;
     boost::asio::ip::udp::endpoint m_remote_endpoint;
-    byte_t m_buffer[MAX_PACKET_LENGTH];
+    char m_buffer[MAX_PACKET_LENGTH];
     boost::asio::ip::udp::socket m_socket;
 };
 } // namespace 

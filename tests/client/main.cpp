@@ -30,11 +30,13 @@ int main()
     }
 
     std::cout << "Sending... " << endl;
-    std::size_t sent_data_size = link_sender->send(data_to_send);
+    boost:boost::system::error_code errorCode;
+    std::size_t sent_data_size = link_sender->send(data_to_send,errorCode);
     std::cout << "Sent bytes: " << sent_data_size << endl;
+    std::cout << "Error codes: " << errorCode.message() << endl;
 
     std::cout << "Listening" << endl;;
-    loodsman::bytearray_t received_data = link_sender->receive();
+    loodsman::bytearray_t received_data = link_sender->receive(errorCode);
   
     // std::cout << "Received bytes: " << received_data.size() << " , from: " << link_sender.remoteAddress() <<
     // ":" << link_sender.remotePort() << endl;

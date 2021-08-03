@@ -23,17 +23,21 @@ int main()
 
     // std::cout << "Local endpoint is " << link_listen->localAddress() << ":" << link_listen->localPort() << endl;    
 
+    boost:boost::system::error_code errorCode;
+
     std::cout << "Listening..." << endl;;
-    loodsman::bytearray_t received_data = link_listen->receive();
+    loodsman::bytearray_t received_data = link_listen->receive(errorCode);
+    std::cout << "Error codes: " << errorCode.message() << endl;
 
     // // std::cout << "Received bytes: " << received_data.size() << " , from: " << link_listen->remoteAddress() <<
     // // ":" << link_listen->remotePort() << endl;
 
     loodsman::bytearray_t data_to_send = "kek!";
     std::cout << "Sending..." << endl;
-    std::size_t sent_data_size = link_listen->send(data_to_send);
+    std::size_t sent_data_size = link_listen->send(data_to_send,errorCode);
     std::cout << "Sent bytes: " << sent_data_size << endl;
-    
+    std::cout << "Error codes: " << errorCode.message() << endl;
+
     // std::cout << "Exiting!" << endl;;
 
 }

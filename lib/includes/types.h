@@ -2,8 +2,7 @@
 #ifndef TYPES_DEFINES_H
 #define TYPES_DEFINES_H
 
-#include <string>
-#include <list>
+#include <vector>
 #include <iostream>
 
 //TODO: parametrize in cmake and split into several files
@@ -32,9 +31,7 @@ enum class link_type
     serial
 };
 
-using byte_t = char;
-using bytearray_t = std::basic_string<byte_t>;
-using string_list_t = std::list<std::string>;
+using bytearray_t = std::basic_string<char>;
 
 }
 
