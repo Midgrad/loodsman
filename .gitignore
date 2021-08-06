@@ -30,12 +30,18 @@
 *.exe
 *.out
 *.app
-.vscode/settings.json
+
 
 CMakeLists.txt.user*
 /build*
 /release
 /debug
+/cmake-build-release/
+/cmake-build-debug/
+/.vscode/
+/.idea
 
 #Mac
 .DS_Store
+
+
