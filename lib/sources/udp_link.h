@@ -2,14 +2,13 @@
 #define UDP_LINK_H
 
 #include "i_link.h"
-#include "types.h"
 
 namespace loodsman
 {
 class UdpLink final : public ILink
 {
 public:
-    UdpLink(int local_port, std::string local_address = "0.0.0.0", int remote_port = 0, std::string remote_address = "0.0.0.0");
+    explicit UdpLink(int local_port, const std::string& local_address = "0.0.0.0", int remote_port = 0, const std::string& remote_address = "0.0.0.0");
 
     int open() override;
     int close() override;
@@ -20,8 +19,8 @@ public:
     std::string remoteAddress() const;
     uint remotePort() const;
 
-    std::size_t send(const bytearray_t& data, boost::system::error_code& errorCode) override;
-    bytearray_t receive(boost::system::error_code& errorCode) override;
+    std::size_t send(std::string_view data, boost::system::error_code& errorCode) override;
+    std::string_view receive(boost::system::error_code& errorCode) override;
 
 private:
 

@@ -3,8 +3,20 @@
 
 #include "i_link.h"
 
+namespace
+{
+
+}
+
 namespace loodsman
 {
+    enum class link_type
+        {
+        udp,
+        tcp,
+        serial
+        };
+
 
 using link_ptr = std::shared_ptr<ILink>;
 

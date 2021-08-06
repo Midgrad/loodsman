@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.7.2)
 cmake_policy(VERSION 3.4.1)
 
 if (NOT DEFINED CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 14)
+  set(CMAKE_CXX_STANDARD 17)
 endif()
 
 # add_compile_options(-Wall -fPIC -O1)
@@ -18,6 +18,10 @@ if (NOT DEFINED Boost_LIBRARIES)
     INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
 endif()
 
+# Compile_time configuration
+# Presumably, max length of the atomic send/receive in an ordinary network
+add_compile_definitions(MAX_PACKET_LENGTH=500 MAX_MTU=1500 DEBUG_VERBOSITY=1)
+
 # target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 
 add_subdirectory(lib)
@@ -28,3 +32,4 @@ option(TESTS_ENABLED "Enable tests" ON)
 if(TESTS_ENABLED)
     add_subdirectory(tests)
 endif(TESTS_ENABLED)
+
