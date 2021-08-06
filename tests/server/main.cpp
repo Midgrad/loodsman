@@ -11,11 +11,13 @@ int main()
     cout << "Start!" << endl;;
     cout << "Creating receiver" << endl;;
 
-    link_ptr link_listen = factory(link_type::udp, 5000);
+    link_ptr link_listen;
 
-    if (link_listen == nullptr)
+    int result = factory(link_listen,link_type::udp, 5000);
+
+    if (result != 0)
     {
-        cout <<  "fabrication failed" << endl;
+        cout << "link creation failed, exiting" << endl;
         exit(-1);
     }
 

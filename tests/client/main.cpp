@@ -11,7 +11,16 @@ int main()
     cout << "Start!" << endl;;
 
     cout << "Creating sender" << endl;;
-    link_ptr link_sender = factory(link_type::udp, 5001, "0.0.0.0", 5000, "127.0.0.1");
+
+    link_ptr link_sender;
+
+    int result = factory(link_sender ,link_type::udp, 5001, "0.0.0.0", 5000, "127.0.0.1");
+
+    if (result != 0)
+        {
+            cout << "link creation failed, exiting" << endl;
+            exit(-1);
+        }
 
     // cout << "Local endpoint is " << link_sender.localAddress() << ":" << link_sender.localPort() << endl;
     // cout << "Remote endpoint is " << link_sender.remoteAddress() << ":" << link_sender.remotePort() << endl;
