@@ -30,6 +30,7 @@ option(TESTS_ENABLED "Enable tests" ON)
 
 # Tests
 if(TESTS_ENABLED)
+    enable_testing()
     add_subdirectory(tests)
 endif(TESTS_ENABLED)
 
