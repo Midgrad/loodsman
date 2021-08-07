@@ -33,5 +33,3 @@ if(TESTS_ENABLED)
     add_subdirectory(tests)
 endif(TESTS_ENABLED)
 
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup(TARGETS)
