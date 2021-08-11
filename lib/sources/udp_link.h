@@ -19,8 +19,11 @@ public:
     std::string remoteAddress() const;
     uint remotePort() const;
 
-    std::size_t send(std::string_view data, boost::system::error_code& errorCode) override;
-    std::string_view receive(boost::system::error_code& errorCode) override;
+    std::string errorMessage() const;
+    uint errorCode() const;
+
+    std::size_t send(std::string_view data) override;
+    std::string_view receive() override;
 
 private:
 
@@ -31,6 +34,8 @@ private:
     boost::asio::ip::udp::endpoint m_remote_endpoint;
     char m_buffer[MAX_PACKET_LENGTH];
     boost::asio::ip::udp::socket m_socket;
+    boost::system::error_code m_errorCode;
+
 };
 } // namespace 
 #endif // UDP_LINK_H

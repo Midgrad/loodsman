@@ -57,6 +57,16 @@ uint UdpLink::localPort() const
     return m_socket.local_endpoint().port();
 }
 
+string UdpLink::errorMessage() const
+{
+    return m_errorCode.message();
+}
+
+uint UdpLink::errorCode() const
+{
+    return m_errorCode.value();
+}
+
 string UdpLink::remoteAddress() const
 {
     return m_remote_endpoint.address().to_string();
@@ -67,16 +77,16 @@ uint UdpLink::remotePort() const
     return m_remote_endpoint.port();
 }
 
-string_view UdpLink::receive(boost::system::error_code& errorCode)
+string_view UdpLink::receive()
 {
-    std::size_t bytes_transferred = m_socket.receive_from(buffer(m_buffer), m_remote_endpoint, socket_base::message_flags(), errorCode);
+    std::size_t bytes_transferred = m_socket.receive_from(buffer(m_buffer), m_remote_endpoint, socket_base::message_flags(), m_errorCode);
 
     return string_view(m_buffer,bytes_transferred);
 }
 
-std::size_t UdpLink::send(string_view data, boost::system::error_code& errorCode)
+std::size_t UdpLink::send(string_view data)
 {
     std::size_t data_size = data.size();
-    std::size_t bytes_transferred = m_socket.send_to(buffer(data, data_size), m_remote_endpoint, socket_base::message_flags(), errorCode);
+    std::size_t bytes_transferred = m_socket.send_to(buffer(data, data_size), m_remote_endpoint, socket_base::message_flags(), m_errorCode);
     return bytes_transferred;
 }

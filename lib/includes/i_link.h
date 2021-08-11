@@ -13,8 +13,8 @@ class ILink
 public:
     virtual ~ILink() = default;
 
-    virtual std::size_t send(std::string_view data, boost::system::error_code& errorCode) = 0;
-    virtual std::string_view receive(boost::system::error_code& errorCode) = 0;
+    virtual std::size_t send(std::string_view data) = 0;
+    virtual std::string_view receive() = 0;
 
     virtual int open() = 0;
     virtual int close() = 0;
