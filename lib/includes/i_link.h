@@ -2,6 +2,7 @@
 #define I_LINK_H
 
 #include <string_view>
+#include <string>
 
 namespace loodsman
 {
