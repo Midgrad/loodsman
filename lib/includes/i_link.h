@@ -1,9 +1,7 @@
 #ifndef I_LINK_H
 #define I_LINK_H
 
-//TODO: remove boost specialization
 #include <string_view>
-#include <boost/asio.hpp>
 
 namespace loodsman
 {
@@ -18,6 +16,9 @@ public:
 
     virtual int open() = 0;
     virtual int close() = 0;
+
+    virtual std::string errorMessage() const = 0;
+    virtual int errorCode() const = 0;
 
 };
 

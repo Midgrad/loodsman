@@ -58,31 +58,31 @@ TEST(intergationTests, ExchangeTest)
     cout << "Sending... " << endl;
     std::size_t sent_data_size = link_sender->send(data_to_send);
     cout << "Sent bytes: " << sent_data_size << endl;
-//    cout << "Error codes: " << errorCode.message() << endl;
+    cout << "Error messages: " << link_sender->errorMessage() << endl;
 
-//    EXPECT_EQ(errorCode.value(), 0);
+    EXPECT_EQ(link_sender->errorCode(), 0);
     EXPECT_EQ(sent_data_size, MAX_PACKET_LENGTH);
 
     cout << "Listening..." << endl;;
     string received_data(link_listen->receive());
-//    cout << "Error codes: " << errorCode.message() << endl;
+    cout << "Error messages: " << link_listen->errorMessage() << endl;
 
-//    EXPECT_EQ(errorCode.value(), 0);
+    EXPECT_EQ(link_listen->errorCode(), 0);
     EXPECT_EQ(received_data.size(), MAX_PACKET_LENGTH);
 
     data_to_send = "Test message";
     cout << "Sending..." << endl;
     sent_data_size = link_listen->send(data_to_send);
     cout << "Sent bytes: " << sent_data_size << endl;
-//    cout << "Error codes: " << errorCode.message() << endl;
+    cout << "Error messages: " << link_listen->errorMessage() << endl;
 
-//    EXPECT_EQ(errorCode.value(), 0);
+    EXPECT_EQ(link_listen->errorCode(), 0);
     EXPECT_EQ(sent_data_size, data_to_send.size());
 
     cout << "Listening" << endl;;
     received_data = string(link_sender->receive());
 
-//    EXPECT_EQ(errorCode.value(), 0);
+    EXPECT_EQ(link_sender->errorCode(), 0);
     EXPECT_EQ(received_data.size(), data_to_send.size());
 
 }

@@ -2,6 +2,7 @@
 #define UDP_LINK_H
 
 #include "i_link.h"
+#include <boost/asio.hpp>
 
 namespace loodsman
 {
@@ -14,13 +15,13 @@ public:
     int close() override;
 
     std::string localAddress() const;
-    uint localPort() const;
+    int localPort() const;
 
     std::string remoteAddress() const;
-    uint remotePort() const;
+    int remotePort() const;
 
-    std::string errorMessage() const;
-    uint errorCode() const;
+    std::string errorMessage() const override;
+    int errorCode() const override;
 
     std::size_t send(std::string_view data) override;
     std::string_view receive() override;

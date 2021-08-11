@@ -52,7 +52,7 @@ string UdpLink::localAddress() const
     return m_socket.local_endpoint().address().to_string();
 }
 
-uint UdpLink::localPort() const
+int UdpLink::localPort() const
 {
     return m_socket.local_endpoint().port();
 }
@@ -62,7 +62,7 @@ string UdpLink::errorMessage() const
     return m_errorCode.message();
 }
 
-uint UdpLink::errorCode() const
+int UdpLink::errorCode() const
 {
     return m_errorCode.value();
 }
@@ -72,7 +72,7 @@ string UdpLink::remoteAddress() const
     return m_remote_endpoint.address().to_string();
 }
 
-uint UdpLink::remotePort() const
+int UdpLink::remotePort() const
 {
     return m_remote_endpoint.port();
 }

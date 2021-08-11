@@ -1,6 +1,7 @@
 #ifndef LINK_FACTORY_H
 #define LINK_FACTORY_H
 
+#include <memory>
 #include "i_link.h"
 
 namespace loodsman
