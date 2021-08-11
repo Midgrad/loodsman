@@ -1,6 +1,3 @@
-# Project
-project(libloodsman)
-
 # Library type
 add_library(${PROJECT_NAME} STATIC "")
 
