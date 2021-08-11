@@ -6,7 +6,7 @@ if (NOT DEFINED CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 17)
 endif()
 
-# add_compile_options(-Wall -fPIC -O1)
+add_compile_options(-fPIC)
 
 # Project
 project(loodsman VERSION 0.3.3
