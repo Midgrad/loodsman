@@ -26,7 +26,7 @@ add_compile_definitions(MAX_PACKET_LENGTH=500 MAX_MTU=1500 DEBUG_VERBOSITY=1)
 
 add_subdirectory(lib)
 
-option(TESTS_ENABLED "Enable tests" ON)
+option(TESTS_ENABLED "Enable tests" OFF)
 
 # Tests
 if(TESTS_ENABLED)
