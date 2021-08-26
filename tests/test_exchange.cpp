@@ -1,49 +1,51 @@
-#include <gtest/gtest.h>
 #include "link_factory.h"
+#include <gtest/gtest.h>
 #include <iostream>
 
-using std::string;
 using std::cout;
 using std::endl;
+using std::string;
 using namespace loodsman;
 
 TEST(intergationTests, SenderConstructorTest)
 {
-    cout << "Creating sender link" << endl;;
-    link_ptr link_sender;
-    int result = factory(link_sender ,link_type::udp, 5001, "0.0.0.0", 5000, "127.0.0.1");
+    cout << "Creating sender link" << endl;
+    ;
+    LinkPtr link_sender;
+    int result = factory(link_sender, link_type::udp, 5001, "0.0.0.0", 5000, "127.0.0.1");
 
     EXPECT_EQ(result, 0);
     ASSERT_NE(link_sender, nullptr);
-
 }
 
 TEST(intergationTests, ReceiveConstructorTest)
 {
-    cout << "Creating listen link" << endl;;
+    cout << "Creating listen link" << endl;
+    ;
 
-    link_ptr link_listen;
-    int result = factory(link_listen,link_type::udp, 5000);
+    LinkPtr link_listen;
+    int result = factory(link_listen, link_type::udp, 5000);
 
     EXPECT_EQ(result, 0);
     ASSERT_NE(link_listen, nullptr);
-
 }
 
 // TODO: clean up cout messages
 TEST(intergationTests, ExchangeTest)
 {
-    cout << "Creating sender link" << endl;;
-    link_ptr link_sender;
-    int result = factory(link_sender ,link_type::udp, 5001, "0.0.0.0", 5000, "127.0.0.1");
+    cout << "Creating sender link" << endl;
+    ;
+    LinkPtr link_sender;
+    int result = factory(link_sender, link_type::udp, 5001, "0.0.0.0", 5000, "127.0.0.1");
 
     EXPECT_EQ(result, 0);
     ASSERT_NE(link_sender, nullptr);
 
-    cout << "Creating listen link" << endl;;
+    cout << "Creating listen link" << endl;
+    ;
 
-    link_ptr link_listen;
-    result = factory(link_listen,link_type::udp, 5000);
+    LinkPtr link_listen;
+    result = factory(link_listen, link_type::udp, 5000);
 
     EXPECT_EQ(result, 0);
     ASSERT_NE(link_listen, nullptr);
@@ -63,7 +65,8 @@ TEST(intergationTests, ExchangeTest)
     EXPECT_EQ(link_sender->errorCode(), 0);
     EXPECT_EQ(sent_data_size, MAX_PACKET_LENGTH);
 
-    cout << "Listening..." << endl;;
+    cout << "Listening..." << endl;
+    ;
     string received_data(link_listen->receive());
     cout << "Error messages: " << link_listen->errorMessage() << endl;
 
@@ -79,10 +82,10 @@ TEST(intergationTests, ExchangeTest)
     EXPECT_EQ(link_listen->errorCode(), 0);
     EXPECT_EQ(sent_data_size, data_to_send.size());
 
-    cout << "Listening" << endl;;
+    cout << "Listening" << endl;
+    ;
     received_data = string(link_sender->receive());
 
     EXPECT_EQ(link_sender->errorCode(), 0);
     EXPECT_EQ(received_data.size(), data_to_send.size());
-
 }
