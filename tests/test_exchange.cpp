@@ -1,3 +1,4 @@
+#include "UdpLinkFactory.h"
 #include "link_factory.h"
 #include <gtest/gtest.h>
 #include <iostream>
@@ -10,9 +11,10 @@ using namespace loodsman;
 TEST(intergationTests, SenderConstructorTest)
 {
     cout << "Creating sender link" << endl;
-    ;
-    LinkPtr link_sender;
-    int result = factory(link_sender, link_type::udp, 5001, "0.0.0.0", 5000, "127.0.0.1");
+
+    UdpLinkFactory factory(5001, "0.0.0.0", 5000, "127.0.0.1");
+    ILink* link_sender;
+    int result = factory.create(link_sender);
 
     EXPECT_EQ(result, 0);
     ASSERT_NE(link_sender, nullptr);
@@ -21,10 +23,10 @@ TEST(intergationTests, SenderConstructorTest)
 TEST(intergationTests, ReceiveConstructorTest)
 {
     cout << "Creating listen link" << endl;
-    ;
 
-    LinkPtr link_listen;
-    int result = factory(link_listen, link_type::udp, 5000);
+    UdpLinkFactory factory(5000);
+    ILink* link_listen;
+    int result = factory.create(link_listen);
 
     EXPECT_EQ(result, 0);
     ASSERT_NE(link_listen, nullptr);
@@ -33,19 +35,18 @@ TEST(intergationTests, ReceiveConstructorTest)
 // TODO: clean up cout messages
 TEST(intergationTests, ExchangeTest)
 {
-    cout << "Creating sender link" << endl;
-    ;
-    LinkPtr link_sender;
-    int result = factory(link_sender, link_type::udp, 5001, "0.0.0.0", 5000, "127.0.0.1");
+    UdpLinkFactory factory(5001, "0.0.0.0", 5000, "127.0.0.1");
+    ILink* link_sender;
+    int result = factory.create(link_sender);
 
     EXPECT_EQ(result, 0);
     ASSERT_NE(link_sender, nullptr);
 
     cout << "Creating listen link" << endl;
-    ;
 
-    LinkPtr link_listen;
-    result = factory(link_listen, link_type::udp, 5000);
+    UdpLinkFactory factory(5000);
+    ILink* link_listen;
+    int result = factory.create(link_listen);
 
     EXPECT_EQ(result, 0);
     ASSERT_NE(link_listen, nullptr);
