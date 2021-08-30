@@ -1,4 +1,4 @@
-# This file for Fleet project is based on https://github.com/qt-creator/qt-creator/edit/master/.clang-format
+# This file for this project is based on https://github.com/qt-creator/qt-creator/edit/master/.clang-format
 # The instruction - https://github.com/qt-creator/qt-creator/tree/master/dist/clangformat
 # The original QT description is located below:
 #
@@ -44,19 +44,19 @@ AlwaysBreakTemplateDeclarations: 'Yes'
 BinPackArguments: true
 BinPackParameters: true
 BraceWrapping:
-  AfterCaseLabel:  true
-  AfterClass:      true
+  AfterCaseLabel: true
+  AfterClass: true
   AfterControlStatement: true
-  AfterEnum:       true
-  AfterFunction:   true
-  AfterNamespace:  true
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: true
   AfterObjCDeclaration: true
-  AfterStruct:     true
-  AfterUnion:      true
+  AfterStruct: true
+  AfterUnion: true
   AfterExternBlock: true
-  BeforeCatch:     true
-  BeforeElse:      true
-  IndentBraces:    false
+  BeforeCatch: true
+  BeforeElse: true
+  IndentBraces: false
   SplitEmptyFunction: true
   SplitEmptyRecord: true
   SplitEmptyNamespace: true
@@ -87,12 +87,12 @@ IndentCaseLabels: false
 IndentWidth: '4'
 IndentWrappedFunctionNames: false
 # next one changed form of the list
-ForEachMacros: ['forever', 'foreach', 'Q_FOREACH', 'BOOST_FOREACH']
+ForEachMacros: [ 'forever', 'foreach', 'Q_FOREACH', 'BOOST_FOREACH' ]
 IncludeCategories:
-  - Regex:           '<[^Q].*'
-    Priority:        1
-  - Regex:           '<Q.*'
-    Priority:        2
+  - Regex: '<[^Q].*'
+    Priority: 1
+  - Regex: '<Q.*'
+    Priority: 2
 JavaScriptQuotes: Leave
 JavaScriptWrapImports: true
 KeepEmptyLinesAtTheStartOfBlocks: 'false'
@@ -100,7 +100,7 @@ Language: Cpp
 MaxEmptyLinesToKeep: '1'
 # Do not add QT_BEGIN_NAMESPACE/QT_END_NAMESPACE as this will indent lines in between.
 MacroBlockBegin: ""
-MacroBlockEnd:   ""
+MacroBlockEnd: ""
 NamespaceIndentation: None
 PenaltyBreakAssignment: '150'
 PenaltyBreakBeforeFirstCallParameter: '300'
