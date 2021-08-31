@@ -9,8 +9,8 @@ namespace loodsman
 class UdpLink final : public ILink
 {
 public:
-    explicit UdpLink(int local_port, const std::string& local_address = "0.0.0.0",
-                     int remote_port = 0, const std::string& remote_address = "0.0.0.0");
+    explicit UdpLink(int localPort, const std::string& localAddress = "0.0.0.0", int remotePort = 0,
+                     const std::string& remoteAddress = "0.0.0.0");
 
     int open() override;
     int close() override;
@@ -29,10 +29,10 @@ public:
 
 private:
     int bind(int port);
-    int connect(const std::string& remote_address, int remote_port);
+    int connect(const std::string& remoteAddress, int remotePort);
 
     boost::asio::io_context m_io;
-    boost::asio::ip::udp::endpoint m_remote_endpoint;
+    boost::asio::ip::udp::endpoint m_remoteEndpoint;
     char m_buffer[MAX_PACKET_LENGTH];
     boost::asio::ip::udp::socket m_socket;
     boost::system::error_code m_errorCode;

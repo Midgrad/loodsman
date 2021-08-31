@@ -2,9 +2,9 @@
 cmake_minimum_required(VERSION 3.7.2)
 cmake_policy(VERSION 3.4.1)
 
-if (NOT DEFINED CMAKE_CXX_STANDARD)
+if(NOT DEFINED CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD 17)
-endif ()
+endif()
 
 add_compile_options(-fPIC)
 
@@ -13,10 +13,10 @@ project(loodsman VERSION 0.3.3
         DESCRIPTION "Cross-platform udp,tcp and serial connection library"
         HOMEPAGE_URL "https://github.com/Midgrad/loodsman")
 
-if (NOT DEFINED Boost_LIBRARIES)
+if(NOT DEFINED Boost_LIBRARIES)
     FIND_PACKAGE(Boost REQUIRED)
     INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
-endif ()
+endif()
 
 # Compile_time configuration
 # Presumably, max length of the atomic send/receive in an ordinary network
@@ -29,8 +29,8 @@ add_subdirectory(lib)
 option(TESTS_ENABLED "Enable tests" OFF)
 
 # Tests
-if (TESTS_ENABLED)
+if(TESTS_ENABLED)
     enable_testing()
     add_subdirectory(tests)
-endif (TESTS_ENABLED)
+endif(TESTS_ENABLED)
 

@@ -31,15 +31,18 @@
 *.out
 *.app
 
-
+# Cmake
 CMakeLists.txt.user*
 /build*
 /release
 /debug
 /cmake-build-release*
 /cmake-build-debug*
+
+# IDE
 /.vscode/
 /.idea
+/Testing
 
 #Mac
 .DS_Store
