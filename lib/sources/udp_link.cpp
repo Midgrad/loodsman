@@ -1,5 +1,7 @@
 #include "udp_link.h"
+
 #include "utils.h"
+
 #include <iostream>
 
 using namespace loodsman;
@@ -7,12 +9,12 @@ using namespace boost::asio;
 using std::string;
 using std::string_view;
 
-UdpLink::UdpLink(int local_port, const string& local_address, int remote_port,
-                 const string& remote_address) :
-    m_socket(m_io, ip::udp::endpoint(ip::make_address(local_address), local_port)),
+UdpLink::UdpLink(int localPort, const string& localAddress, int remotePort,
+                 const string& remoteAddress) :
+    m_socket(m_io, ip::udp::endpoint(ip::make_address(localAddress), localPort)),
     m_buffer{}
 {
-    m_remote_endpoint = ip::udp::endpoint(ip::make_address(remote_address), remote_port);
+    m_remoteEndpoint = ip::udp::endpoint(ip::make_address(remoteAddress), remotePort);
 }
 
 int UdpLink::open()
@@ -44,10 +46,10 @@ int UdpLink::bind(int port)
 
 // Presumably used to permanently bind socket to a remote address, and prevent changes.
 // may be helpful if we would use immutable objects
-int UdpLink::connect(const string& address, int port)
+int UdpLink::connect(const string& remoteAddress, int remotePort)
 {
     boost::system::error_code error;
-    m_socket.connect(ip::udp::endpoint(ip::make_address(address), port), error);
+    m_socket.connect(ip::udp::endpoint(ip::make_address(remoteAddress), remotePort), error);
     if (error.value())
         debug_print(error.message());
     return error.value();
@@ -75,27 +77,26 @@ int UdpLink::errorCode() const
 
 string UdpLink::remoteAddress() const
 {
-    return m_remote_endpoint.address().to_string();
+    return m_remoteEndpoint.address().to_string();
 }
 
 int UdpLink::remotePort() const
 {
-    return m_remote_endpoint.port();
+    return m_remoteEndpoint.port();
 }
 
 std::string UdpLink::receive()
 {
-    std::size_t bytes_transferred = m_socket.receive_from(buffer(m_buffer), m_remote_endpoint,
-                                                          socket_base::message_flags(),
-                                                          m_errorCode);
+    std::size_t bytesTransferred = m_socket.receive_from(buffer(m_buffer), m_remoteEndpoint,
+                                                         socket_base::message_flags(), m_errorCode);
 
-    return std::string(m_buffer, bytes_transferred);
+    return { m_buffer, bytesTransferred };
 }
 
 std::size_t UdpLink::send(string_view data)
 {
-    std::size_t data_size = data.size();
-    std::size_t bytes_transferred = m_socket.send_to(buffer(data, data_size), m_remote_endpoint,
-                                                     socket_base::message_flags(), m_errorCode);
-    return bytes_transferred;
+    std::size_t dataSize = data.size();
+    std::size_t bytesTransferred = m_socket.send_to(buffer(data, dataSize), m_remoteEndpoint,
+                                                    socket_base::message_flags(), m_errorCode);
+    return bytesTransferred;
 }
