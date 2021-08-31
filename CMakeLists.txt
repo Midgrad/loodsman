@@ -9,7 +9,7 @@ endif()
 add_compile_options(-fPIC)
 
 # Project
-project(loodsman VERSION 0.3.3
+project(loodsman VERSION 0.4.0
         DESCRIPTION "Cross-platform udp,tcp and serial connection library"
         HOMEPAGE_URL "https://github.com/Midgrad/loodsman")
 
@@ -26,7 +26,7 @@ add_compile_definitions(MAX_PACKET_LENGTH=500 MAX_MTU=1500 DEBUG_VERBOSITY=1)
 
 add_subdirectory(lib)
 
-option(TESTS_ENABLED "Enable tests" OFF)
+option(TESTS_ENABLED "Enable tests" ON)
 
 # Tests
 if(TESTS_ENABLED)

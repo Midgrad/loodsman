@@ -37,14 +37,17 @@ UdpLinkFactory::UdpLinkFactory(int localPort) :
 
 ILink* UdpLinkFactory::create()
 {
+    ILink* link = nullptr;
+
     try
     {
-        UdpLink(m_localPort, m_localAddress, m_remotePort, m_remoteAddress);
+        link = new UdpLink(m_localPort, m_localAddress, m_remotePort, m_remoteAddress);
     }
     catch (const boost::system::system_error& error)
     {
         debug_print("boost system error");
         m_errorCode = error.code().value();
+        std::cout << error.code().message();
     }
     catch (...)
     {
@@ -52,7 +55,7 @@ ILink* UdpLinkFactory::create()
         m_errorCode = 1;
     }
 
-    return 0;
+    return link;
 }
 int UdpLinkFactory::errorCode() const
 {
