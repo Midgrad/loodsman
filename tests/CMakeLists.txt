@@ -3,7 +3,8 @@ project(loodsman_tests)
 add_executable(${PROJECT_NAME} "")
 
 # Checking of the exising gtest and dynamically download it otherwise
-if(NOT DEFINED GOOGLETEST_VERSION)
+if (NOT TARGET gtest)
+    message("Gtest not found by loodsman, fetching from internet")
     include(FetchContent)
     FetchContent_Declare(
             googletest
@@ -11,7 +12,7 @@ if(NOT DEFINED GOOGLETEST_VERSION)
     )
 
     FetchContent_MakeAvailable(googletest)
-endif()
+endif ()
 
 # Internal core sources and headers
 file(GLOB SOURCES "./*.h" "./*.hpp" "./*.cpp")
