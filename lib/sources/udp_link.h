@@ -2,6 +2,7 @@
 #define UDP_LINK_H
 
 #include "i_link.h"
+
 #include <boost/asio.hpp>
 
 namespace loodsman

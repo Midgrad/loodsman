@@ -1,8 +1,9 @@
 #include "udp_link_factory.h"
+
 #include "i_link.h"
-#include "i_link_factory.h"
 #include "udp_link.h"
 #include "utils.h"
+
 #include <string_view>
 
 using namespace loodsman;
@@ -18,20 +19,11 @@ UdpLinkFactory::UdpLinkFactory(int localPort, std::string_view localAddress, int
 }
 
 UdpLinkFactory::UdpLinkFactory(int localPort, std::string_view localAddress) :
-    m_errorCode(0),
-    m_localPort(localPort),
-    m_localAddress(localAddress),
-    m_remotePort(0),
-    m_remoteAddress("0.0.0.0")
+    UdpLinkFactory(localPort, localAddress, 0, "0.0.0.0")
 {
 }
 
-UdpLinkFactory::UdpLinkFactory(int localPort) :
-    m_errorCode(0),
-    m_localPort(localPort),
-    m_localAddress("0.0.0.0"),
-    m_remotePort(0),
-    m_remoteAddress("0.0.0.0")
+UdpLinkFactory::UdpLinkFactory(int localPort) : UdpLinkFactory(localPort, "0.0.0.0", 0, "0.0.0.0")
 {
 }
 

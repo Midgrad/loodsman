@@ -1,6 +1,5 @@
-
-#ifndef LOODSMAN_UTILS_H
-#define LOODSMAN_UTILS_H
+#ifndef UTILS_H
+#define UTILS_H
 
 #include <iostream>
 
@@ -15,4 +14,4 @@ void debug_print(std::string_view message)
 
 } // namespace
 
-#endif
+#endif //UTILS_H

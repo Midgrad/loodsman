@@ -1,9 +1,11 @@
-#include "i_link.h"
-#include "i_link_factory.h"
-#include <string_view>
-
 #ifndef UDP_LINK_FACTORY_H
 #define UDP_LINK_FACTORY_H
+
+#include "i_link_factory.h"
+
+#include "i_link.h"
+
+#include <string_view>
 
 namespace loodsman
 {
