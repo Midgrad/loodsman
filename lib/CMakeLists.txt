@@ -9,7 +9,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC includes)
 
 if (NOT TARGET Boost_LIBRARIES)
     message("Boost not found by loodsman, let's find one")
-    FIND_PACKAGE(Boost COMPONENTS system REQUIRED)
+    FIND_PACKAGE(Boost REQUIRED)
     INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
 endif ()
 
