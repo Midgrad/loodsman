@@ -10,6 +10,8 @@ using namespace loodsman;
 
 UdpLinkFactory::UdpLinkFactory(int localPort, std::string_view localAddress, int remotePort,
                                std::string_view remoteAddress) :
+    //TODO: for testing purpose only - do not store context here!
+    m_ioContext(),
     m_errorCode(0),
     m_localPort(localPort),
     m_localAddress(localAddress),
@@ -33,7 +35,7 @@ ILink* UdpLinkFactory::create()
 
     try
     {
-        link = new UdpLink(m_localPort, m_localAddress, m_remotePort, m_remoteAddress);
+        link = new UdpLink(m_ioContext, m_localPort, m_localAddress, m_remotePort, m_remoteAddress);
     }
     catch (const boost::system::system_error& error)
     {

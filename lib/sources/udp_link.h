@@ -15,7 +15,8 @@ class UdpLink final
     , public ILinkAsync
 {
 public:
-    explicit UdpLink(int localPort, const std::string& localAddress = "0.0.0.0", int remotePort = 0,
+    explicit UdpLink(boost::asio::io_context& ioContext, int localPort,
+                     const std::string& localAddress = "0.0.0.0", int remotePort = 0,
                      const std::string& remoteAddress = "0.0.0.0");
 
     int open() override;
@@ -48,7 +49,7 @@ private:
     int bind(int port);
     int connect(const std::string& remoteAddress, int remotePort);
 
-    boost::asio::io_context m_io;
+    //    boost::asio::io_context m_io;
     boost::asio::ip::udp::endpoint m_remoteEndpoint;
     char m_buffer[MAX_PACKET_LENGTH];
     boost::asio::ip::udp::socket m_socket;
