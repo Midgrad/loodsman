@@ -2,12 +2,17 @@
 #define UDP_LINK_H
 
 #include "i_link.h"
+#include "i_link_async.h"
+
+#include "utils.h"
 
 #include <boost/asio.hpp>
 
 namespace loodsman
 {
-class UdpLink final : public ILink
+class UdpLink final
+    : public ILink
+    , public ILinkAsync
 {
 public:
     explicit UdpLink(int localPort, const std::string& localAddress = "0.0.0.0", int remotePort = 0,
@@ -27,6 +32,17 @@ public:
 
     std::size_t send(std::string_view data) override;
     std::string receive() override;
+
+    void asyncSend(std::string_view data, SendHandler handler) override;
+    void asyncReceive(ReceiveHandler handler) override;
+
+    static void asyncReceiveHandlerWrapper(const boost::system::error_code& errorCode,
+                                           std::size_t bytesTransferred, UdpLink* link,
+                                           const ReceiveHandler& handler);
+
+    static void asyncSendHandlerWrapper(const boost::system::error_code& errorCode,
+                                        std::size_t bytesTransferred, UdpLink* link,
+                                        const SendHandler& handler);
 
 private:
     int bind(int port);

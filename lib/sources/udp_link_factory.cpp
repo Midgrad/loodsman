@@ -37,13 +37,13 @@ ILink* UdpLinkFactory::create()
     }
     catch (const boost::system::system_error& error)
     {
-        debug_print("boost system error");
+        debugPrint("boost system error");
         m_errorCode = error.code().value();
         std::cout << error.code().message();
     }
     catch (...)
     {
-        debug_print("Generic error");
+        debugPrint("Generic error");
         m_errorCode = 1;
     }
 
