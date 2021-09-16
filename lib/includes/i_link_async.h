@@ -4,9 +4,6 @@
 #include <functional>
 #include <string_view>
 
-// TODO: Clear out
-//#include <boost/asio.hpp>
-
 namespace loodsman
 {
 using ReceiveHandler = std::function<void(std::string)>;
