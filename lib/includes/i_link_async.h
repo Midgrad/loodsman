@@ -9,7 +9,7 @@ namespace loodsman
 using ReceiveHandler = std::function<void(std::string)>;
 using SendHandler = std::function<void(std::size_t)>;
 
-class ILinkAsync
+class ILinkAsync : public ILink
 {
 public:
     virtual void asyncSend(std::string_view data, SendHandler handler) = 0;

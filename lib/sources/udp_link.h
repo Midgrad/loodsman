@@ -10,9 +10,7 @@
 
 namespace loodsman
 {
-class UdpLink final
-    : public ILink
-    , public ILinkAsync
+class UdpLink final : public ILinkAsync
 {
 public:
     explicit UdpLink(boost::asio::io_context& ioContext, int localPort,

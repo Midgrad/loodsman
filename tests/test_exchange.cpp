@@ -100,7 +100,7 @@ TEST(intergationTests, SyncExchangeTest)
 
 void sendHandler(std::size_t bytesTransferred)
 {
-    cout << "sendhandler:Sent bytes: " << bytesTransferred << endl;
+    cout << "Send handler:Sent bytes: " << bytesTransferred << endl;
     EXPECT_NE(bytesTransferred, 0);
 }
 
@@ -148,6 +148,9 @@ TEST(intergationTests, AsyncExchangeTest)
     cout << "Listening..." << endl;
     ;
     linkListen->asyncReceive(receiveHandler);
+
+    cout << "This message should be displayed before " << endl;
+
 
     factory.checkHandlers();
 

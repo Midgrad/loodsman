@@ -53,9 +53,9 @@ ILinkAsync* UdpLinkFactory::create(int localPort, const std::string& localAddres
     return link;
 }
 
-ILink* UdpLinkFactory::create()
+ILinkAsync* UdpLinkFactory::create()
 {
-    ILink* link = nullptr;
+    ILinkAsync* link = nullptr;
 
     try
     {

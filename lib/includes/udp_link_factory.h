@@ -23,7 +23,7 @@ public:
 
     UdpLinkFactory(int localPort);
 
-    ILink* create() override;
+    ILinkAsync* create() override;
     ILinkAsync* create(int localPort, const std::string& localAddress = "0.0.0.0",
                        int remotePort = 0, const std::string& remoteAddress = "0.0.0.0");
 
