@@ -29,6 +29,30 @@ UdpLinkFactory::UdpLinkFactory(int localPort) : UdpLinkFactory(localPort, "0.0.0
 {
 }
 
+ILinkAsync* UdpLinkFactory::create(int localPort, const std::string& localAddress, int remotePort,
+                                   const std::string& remoteAddress)
+{
+    ILinkAsync* link = nullptr;
+
+    try
+    {
+        link = new UdpLink(m_ioContext, localPort, localAddress, remotePort, remoteAddress);
+    }
+    catch (const boost::system::system_error& error)
+    {
+        debugPrint("boost system error");
+        m_errorCode = error.code().value();
+        std::cout << error.code().message();
+    }
+    catch (...)
+    {
+        debugPrint("Generic error");
+        m_errorCode = 1;
+    }
+
+    return link;
+}
+
 ILink* UdpLinkFactory::create()
 {
     ILink* link = nullptr;
@@ -54,4 +78,10 @@ ILink* UdpLinkFactory::create()
 int UdpLinkFactory::errorCode() const
 {
     return m_errorCode;
+}
+
+void UdpLinkFactory::checkHandlers()
+{
+    m_ioContext.poll();
+    m_ioContext.reset();
 }

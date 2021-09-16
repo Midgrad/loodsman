@@ -4,6 +4,7 @@
 #include "i_link_factory.h"
 
 #include "i_link.h"
+#include "i_link_async.h"
 
 #include <string>
 #include <string_view>
@@ -23,13 +24,17 @@ public:
     UdpLinkFactory(int localPort);
 
     ILink* create() override;
+    ILinkAsync* create(int localPort, const std::string& localAddress = "0.0.0.0",
+                       int remotePort = 0, const std::string& remoteAddress = "0.0.0.0");
 
     int errorCode() const override;
 
+    void checkHandlers();
+
 private:
     //TODO: for testing purpose only - do not store context here!
-
     boost::asio::io_context m_ioContext;
+
     const int m_localPort;
     const std::string m_localAddress;
     const int m_remotePort;
