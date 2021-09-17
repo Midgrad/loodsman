@@ -1,4 +1,4 @@
-#include "udp_link_factory.h"
+#include "link_factory.h"
 #include <gtest/gtest.h>
 #include <iostream>
 
@@ -9,8 +9,8 @@ using namespace loodsman;
 
 TEST(intergationTests, SenderConstructorTest)
 {
-    UdpLinkFactory factory(5001, "0.0.0.0", 5000, "127.0.0.1");
-    ILink* linkSender = factory.create();
+    LinkFactory factory;
+    ILinkAsync* linkSender = factory.createIp(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1");
 
     int result = factory.errorCode();
 
@@ -22,8 +22,8 @@ TEST(intergationTests, SenderConstructorTest)
 
 TEST(intergationTests, ReceiveConstructorTest)
 {
-    UdpLinkFactory factory(5000);
-    ILink* linkListen = factory.create();
+    LinkFactory factory;
+    ILink* linkListen = factory.createIp(LinkType::udp, 5000);
 
     int result = factory.errorCode();
 
@@ -35,16 +35,16 @@ TEST(intergationTests, ReceiveConstructorTest)
 
 TEST(intergationTests, SyncExchangeTest)
 {
-    UdpLinkFactory factorySender(5001, "0.0.0.0", 5000, "127.0.0.1");
-    ILink* linkSender = factorySender.create();
+    LinkFactory factory;
+    ILinkAsync* linkSender = factory.createIp(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1");
 
-    int result = factorySender.errorCode();
+    int result = factory.errorCode();
 
     EXPECT_EQ(result, 0);
     ASSERT_NE(linkSender, nullptr);
 
-    UdpLinkFactory factoryListen(5000);
-    ILink* linkListen = factoryListen.create();
+    LinkFactory factoryListen;
+    ILink* linkListen = factoryListen.createIp(LinkType::udp, 5000);
 
     result = factoryListen.errorCode();
 
@@ -112,15 +112,15 @@ void receiveHandler(const std::string& data)
 
 TEST(intergationTests, AsyncExchangeTest)
 {
-    UdpLinkFactory factory(0);
-    ILinkAsync* linkSender = factory.create(5001, "0.0.0.0", 5000, "127.0.0.1");
+    LinkFactory factory;
+    ILinkAsync* linkSender = factory.createIp(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1");
 
     int result = factory.errorCode();
 
     EXPECT_EQ(result, 0);
     ASSERT_NE(linkSender, nullptr);
 
-    ILinkAsync* linkListen = factory.create(5000);
+    ILinkAsync* linkListen = factory.createIp(LinkType::udp, 5000);
 
     result = factory.errorCode();
 

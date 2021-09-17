@@ -10,7 +10,7 @@ class ILinkFactory
 public:
     virtual ~ILinkFactory() = default;
 
-    virtual ILink* create() = 0;
+//    virtual ILink* create() = 0;
 
     virtual int errorCode() const = 0;
 };

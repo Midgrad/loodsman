@@ -1,6 +1,8 @@
 #ifndef I_LINK_ASYNC_H
 #define I_LINK_ASYNC_H
 
+#include "i_link.h"
+
 #include <functional>
 #include <string_view>
 

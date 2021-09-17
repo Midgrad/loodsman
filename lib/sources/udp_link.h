@@ -47,7 +47,6 @@ private:
     int bind(int port);
     int connect(const std::string& remoteAddress, int remotePort);
 
-    //    boost::asio::io_context m_io;
     boost::asio::ip::udp::endpoint m_remoteEndpoint;
     char m_buffer[MAX_PACKET_LENGTH];
     boost::asio::ip::udp::socket m_socket;
