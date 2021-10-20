@@ -16,7 +16,7 @@ LinkFactory::LinkFactory() :
 {
 }
 
-ILinkAsync* LinkFactory::createIp(LinkType type, int localPort, const std::string& localAddress, int remotePort,
+ILinkAsync* LinkFactory::create(LinkType type, int localPort, const std::string& localAddress, int remotePort,
                                    const std::string& remoteAddress)
 {
     ILinkAsync* link = nullptr;
@@ -29,7 +29,12 @@ ILinkAsync* LinkFactory::createIp(LinkType type, int localPort, const std::strin
             link = new UdpLink(m_ioContext, localPort, localAddress, remotePort, remoteAddress);
             break;
         case LinkType::tcp:
-            std::cout << "Not implemented" << std::endl;
+            std::cout << "TCP Link type is not implemented" << std::endl;
+            // TODO: Fix magic number, sync error codes with boost::system::system_error
+            m_errorCode = 1;
+            break;
+        case LinkType::serial:
+            std::cout << "Serial Link type is not implemented" << std::endl;
             // TODO: Fix magic number, sync error codes with boost::system::system_error
             m_errorCode = 1;
             break;
