@@ -10,7 +10,7 @@ using namespace loodsman;
 TEST(intergationTests, SenderConstructorTest)
 {
     LinkFactory factory;
-    ILinkAsync* linkSender = factory.createIp(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1");
+    ILinkAsync* linkSender = factory.create(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1");
 
     int result = factory.errorCode();
 
@@ -23,7 +23,7 @@ TEST(intergationTests, SenderConstructorTest)
 TEST(intergationTests, ReceiveConstructorTest)
 {
     LinkFactory factory;
-    ILink* linkListen = factory.createIp(LinkType::udp, 5000);
+    ILink* linkListen = factory.create(LinkType::udp, 5000);
 
     int result = factory.errorCode();
 
@@ -36,7 +36,7 @@ TEST(intergationTests, ReceiveConstructorTest)
 TEST(intergationTests, SyncExchangeTest)
 {
     LinkFactory factory;
-    ILinkAsync* linkSender = factory.createIp(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1");
+    ILinkAsync* linkSender = factory.create(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1");
 
     int result = factory.errorCode();
 
@@ -44,7 +44,7 @@ TEST(intergationTests, SyncExchangeTest)
     ASSERT_NE(linkSender, nullptr);
 
     LinkFactory factoryListen;
-    ILink* linkListen = factoryListen.createIp(LinkType::udp, 5000);
+    ILink* linkListen = factoryListen.create(LinkType::udp, 5000);
 
     result = factoryListen.errorCode();
 
@@ -113,14 +113,14 @@ void receiveHandler(const std::string& data)
 TEST(intergationTests, AsyncExchangeTest)
 {
     LinkFactory factory;
-    ILinkAsync* linkSender = factory.createIp(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1");
+    ILinkAsync* linkSender = factory.create(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1");
 
     int result = factory.errorCode();
 
     EXPECT_EQ(result, 0);
     ASSERT_NE(linkSender, nullptr);
 
-    ILinkAsync* linkListen = factory.createIp(LinkType::udp, 5000);
+    ILinkAsync* linkListen = factory.create(LinkType::udp, 5000);
 
     result = factory.errorCode();
 

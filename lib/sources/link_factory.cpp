@@ -4,8 +4,8 @@
 #include "udp_link.h"
 #include "utils.h"
 
-#include <string_view>
 #include <iostream>
+#include <string_view>
 
 using namespace loodsman;
 
@@ -16,8 +16,8 @@ LinkFactory::LinkFactory() :
 {
 }
 
-ILinkAsync* LinkFactory::createIp(LinkType type, int localPort, const std::string& localAddress, int remotePort,
-                                   const std::string& remoteAddress)
+ILinkAsync* LinkFactory::create(LinkType type, int localPort, const std::string& localAddress,
+                                int remotePort, const std::string& remoteAddress)
 {
     ILinkAsync* link = nullptr;
 
@@ -29,7 +29,12 @@ ILinkAsync* LinkFactory::createIp(LinkType type, int localPort, const std::strin
             link = new UdpLink(m_ioContext, localPort, localAddress, remotePort, remoteAddress);
             break;
         case LinkType::tcp:
-            std::cout << "Not implemented" << std::endl;
+            std::cout << "TCP Link type is not implemented" << std::endl;
+            // TODO: Fix magic number, sync error codes with boost::system::system_error
+            m_errorCode = 1;
+            break;
+        case LinkType::serial:
+            std::cout << "Serial Link type is not implemented" << std::endl;
             // TODO: Fix magic number, sync error codes with boost::system::system_error
             m_errorCode = 1;
             break;
@@ -38,21 +43,20 @@ ILinkAsync* LinkFactory::createIp(LinkType type, int localPort, const std::strin
             std::cout << "Unknown link type" << std::endl;
         }
     }
-        catch (const boost::system::system_error& error)
-        {
-            debugPrint("boost system error");
-            m_errorCode = error.code().value();
-            std::cout << error.code().message();
-        }
-        catch (...)
-        {
-            debugPrint("Generic error");
-            m_errorCode = 1;
-        }
+    catch (const boost::system::system_error& error)
+    {
+        debugPrint("boost system error");
+        m_errorCode = error.code().value();
+        std::cout << error.code().message();
+    }
+    catch (...)
+    {
+        debugPrint("Generic error");
+        m_errorCode = 1;
+    }
 
-        return link;
+    return link;
 }
-
 
 int LinkFactory::errorCode() const
 {
@@ -63,4 +67,9 @@ void LinkFactory::checkHandlers()
 {
     m_ioContext.poll();
     m_ioContext.reset();
+}
+
+void LinkFactory::runHandlers()
+{
+    m_ioContext.run();
 }

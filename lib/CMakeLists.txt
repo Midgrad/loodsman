@@ -9,7 +9,12 @@ target_include_directories(${PROJECT_NAME} PUBLIC includes)
 
 if (NOT TARGET Boost_LIBRARIES)
     message("Boost not found by loodsman, let's find one")
-    FIND_PACKAGE(Boost REQUIRED)
+    message(${CMAKE_HOST_SYSTEM_NAME})
+    if (CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
+        FIND_PACKAGE(Boost COMPONENTS system REQUIRED)
+    elseif (CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux")
+        FIND_PACKAGE(Boost REQUIRED)
+    endif ()
     INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
 endif ()
 
