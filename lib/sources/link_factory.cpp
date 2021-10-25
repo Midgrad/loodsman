@@ -4,8 +4,8 @@
 #include "udp_link.h"
 #include "utils.h"
 
-#include <string_view>
 #include <iostream>
+#include <string_view>
 
 using namespace loodsman;
 
@@ -16,8 +16,8 @@ LinkFactory::LinkFactory() :
 {
 }
 
-ILinkAsync* LinkFactory::create(LinkType type, int localPort, const std::string& localAddress, int remotePort,
-                                   const std::string& remoteAddress)
+ILinkAsync* LinkFactory::create(LinkType type, int localPort, const std::string& localAddress,
+                                int remotePort, const std::string& remoteAddress)
 {
     ILinkAsync* link = nullptr;
 
@@ -43,21 +43,20 @@ ILinkAsync* LinkFactory::create(LinkType type, int localPort, const std::string&
             std::cout << "Unknown link type" << std::endl;
         }
     }
-        catch (const boost::system::system_error& error)
-        {
-            debugPrint("boost system error");
-            m_errorCode = error.code().value();
-            std::cout << error.code().message();
-        }
-        catch (...)
-        {
-            debugPrint("Generic error");
-            m_errorCode = 1;
-        }
+    catch (const boost::system::system_error& error)
+    {
+        debugPrint("boost system error");
+        m_errorCode = error.code().value();
+        std::cout << error.code().message();
+    }
+    catch (...)
+    {
+        debugPrint("Generic error");
+        m_errorCode = 1;
+    }
 
-        return link;
+    return link;
 }
-
 
 int LinkFactory::errorCode() const
 {
@@ -68,4 +67,9 @@ void LinkFactory::checkHandlers()
 {
     m_ioContext.poll();
     m_ioContext.reset();
+}
+
+void LinkFactory::runHandlers()
+{
+    m_ioContext.run();
 }
