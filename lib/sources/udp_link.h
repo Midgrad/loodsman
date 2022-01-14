@@ -2,7 +2,7 @@
 #define UDP_LINK_H
 
 #include "i_link.h"
-#include "i_link_async.h"
+#include "link_async.h"
 
 #include "utils.h"
 
@@ -10,11 +10,10 @@
 
 namespace loodsman
 {
-class UdpLink final : public ILinkAsync
+class UdpLink final : public LinkAsync
 {
 public:
-    explicit UdpLink(boost::asio::io_context& ioContext, int localPort,
-                     const std::string& localAddress = "0.0.0.0", int remotePort = 0,
+    explicit UdpLink(int localPort, const std::string& localAddress = "0.0.0.0", int remotePort = 0,
                      const std::string& remoteAddress = "0.0.0.0");
 
     int open() override;
