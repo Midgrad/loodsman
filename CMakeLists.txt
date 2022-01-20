@@ -9,7 +9,7 @@ endif()
 add_compile_options(-fPIC)
 
 # Project
-project(loodsman VERSION 0.5.1
+project(loodsman VERSION 0.5.2
         DESCRIPTION "Cross-platform udp,tcp and serial connection library"
         HOMEPAGE_URL "https://github.com/Midgrad/loodsman")
 
