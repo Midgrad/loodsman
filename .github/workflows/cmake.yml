@@ -38,7 +38,7 @@ jobs:
       - name: Custom commands
         env:
           COMMAND: ${{ matrix.command }}
-        run: bash -c "${COMMAND}"
+        run: bash -c "${COMMAND}" || true; bash -c $Env:COMMAND || true
 
       - run: conan install ${{github.workspace}}/conan/conanfile.txt --install-folder=${{github.workspace}}/deps --build=missing
 
