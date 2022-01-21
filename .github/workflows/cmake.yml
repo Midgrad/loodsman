@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install Deps
+      #      - name: Install Deps
       - run: sudo apt install python
       - run: pip3 install conan
       - run: cd ${{github.workspace}}/conan
