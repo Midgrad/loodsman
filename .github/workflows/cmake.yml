@@ -38,7 +38,7 @@ jobs:
       - name: Conan gcc abi fix
         env:
           COMMAND: ${{ matrix.command }}
-        run: sh -c "$COMMAND" || true
+        run: bash -c "${COMMAND}" || true
 
       - run: conan install ${{github.workspace}}/conan/conanfile.txt --install-folder=${{github.workspace}}/deps --build=missing
 
