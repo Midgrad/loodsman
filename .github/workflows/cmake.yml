@@ -24,7 +24,7 @@ jobs:
       #      - name: Install Deps
       #      - run: sudo apt install python3
       - run: pip3 install conan
-      - run: conan install ${{github.workspace}}/conan/conanfile.txt --install-folder=../deps
+      - run: conan install ${{github.workspace}}/conan/conanfile.txt --install-folder=${{github.workspace}}/deps
 
       - name: Configure CMake
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
