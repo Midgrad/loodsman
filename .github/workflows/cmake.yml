@@ -29,6 +29,8 @@ jobs:
 
       - run: pip3 install conan
       - run: conan profile new default --detect
+      - run: conan profile update compiler.cppstd=17 default
+
       - name: Conan gcc abi fix
         env:
           COMMAND: ${{ matrix.command }}
