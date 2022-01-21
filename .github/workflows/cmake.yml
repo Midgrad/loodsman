@@ -19,11 +19,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-20.04, windows-2022, macos-11 ]
+        os: [ ubuntu-20.04, windows-2019, macos-11 ]
         include:
           - os: ubuntu-20.04
             command: conan profile update settings.compiler.libcxx=libstdc++11 default
-          - os: windows-2022
+          - os: windows-2019
             command: conan profile update settings.compiler.runtime=static default
 
 
