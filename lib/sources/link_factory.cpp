@@ -9,24 +9,21 @@
 
 using namespace loodsman;
 
-LinkFactory::LinkFactory() :
-    //TODO: for testing purpose only - do not store context here!
-    m_ioContext(),
-    m_errorCode(0)
+LinkFactory::LinkFactory() : m_errorCode(0)
 {
 }
 
-ILinkAsync* LinkFactory::create(LinkType type, int localPort, const std::string& localAddress,
-                                int remotePort, const std::string& remoteAddress)
+LinkAsync* LinkFactory::create(LinkType type, int localPort, const std::string& localAddress,
+                               int remotePort, const std::string& remoteAddress)
 {
-    ILinkAsync* link = nullptr;
+    LinkAsync* link = nullptr;
 
     try
     {
         switch (type)
         {
         case LinkType::udp:
-            link = new UdpLink(m_ioContext, localPort, localAddress, remotePort, remoteAddress);
+            link = new UdpLink(localPort, localAddress, remotePort, remoteAddress);
             break;
         case LinkType::tcp:
             std::cout << "TCP Link type is not implemented" << std::endl;
@@ -61,15 +58,4 @@ ILinkAsync* LinkFactory::create(LinkType type, int localPort, const std::string&
 int LinkFactory::errorCode() const
 {
     return m_errorCode;
-}
-
-void LinkFactory::checkHandlers()
-{
-    m_ioContext.poll();
-    m_ioContext.reset();
-}
-
-void LinkFactory::runHandlers()
-{
-    m_ioContext.run();
 }
