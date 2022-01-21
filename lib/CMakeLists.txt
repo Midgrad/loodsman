@@ -16,4 +16,4 @@ if(NOT TARGET Boost::Boost)
 endif()
 
 
-target_link_libraries(${PROJECT_NAME} Boost::headers pthread)
+target_link_libraries(${PROJECT_NAME} Boost::headers)
