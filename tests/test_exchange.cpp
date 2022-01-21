@@ -10,7 +10,7 @@ using namespace loodsman;
 TEST(intergationTests, SenderConstructorTest)
 {
     LinkFactory factory;
-    ILinkAsync* linkSender = factory.create(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1");
+    LinkAsync* linkSender = factory.create(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1");
 
     int result = factory.errorCode();
 
@@ -36,7 +36,7 @@ TEST(intergationTests, ReceiveConstructorTest)
 TEST(intergationTests, SyncExchangeTest)
 {
     LinkFactory factory;
-    ILinkAsync* linkSender = factory.create(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1");
+    LinkAsync* linkSender = factory.create(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1");
 
     int result = factory.errorCode();
 
@@ -113,14 +113,14 @@ void receiveHandler(const std::string& data)
 TEST(intergationTests, AsyncExchangeTest)
 {
     LinkFactory factory;
-    ILinkAsync* linkSender = factory.create(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1");
+    LinkAsync* linkSender = factory.create(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1");
 
     int result = factory.errorCode();
 
     EXPECT_EQ(result, 0);
     ASSERT_NE(linkSender, nullptr);
 
-    ILinkAsync* linkListen = factory.create(LinkType::udp, 5000);
+    LinkAsync* linkListen = factory.create(LinkType::udp, 5000);
 
     result = factory.errorCode();
 
@@ -151,8 +151,10 @@ TEST(intergationTests, AsyncExchangeTest)
 
     cout << "This message should be displayed before " << endl;
 
+//    factory.checkHandlers();
+    linkListen->checkHandlers();
+    linkSender->checkHandlers();
 
-    factory.checkHandlers();
 
     //    cout << "Error messages: " << linkListen->errorMessage() << endl;
     //    EXPECT_EQ(linkListen->errorCode(), 0);
@@ -171,7 +173,8 @@ TEST(intergationTests, AsyncExchangeTest)
 
     linkSender->asyncReceive(receiveHandler);
 
-    factory.checkHandlers();
+    linkListen->checkHandlers();
+    linkSender->checkHandlers();
 
     //    delete linkListen;
     //    delete linkSender;

@@ -10,9 +10,9 @@ using std::string;
 using std::string_view;
 using namespace std::placeholders;
 
-UdpLink::UdpLink(boost::asio::io_context& ioContext, int localPort, const string& localAddress,
-                 int remotePort, const string& remoteAddress) :
-    m_socket(ioContext, ip::udp::endpoint(ip::make_address(localAddress), localPort)),
+UdpLink::UdpLink(int localPort, const string& localAddress, int remotePort,
+                 const string& remoteAddress) :
+    m_socket(m_ioContext, ip::udp::endpoint(ip::make_address(localAddress), localPort)),
     m_buffer{}
 {
     m_remoteEndpoint = ip::udp::endpoint(ip::make_address(remoteAddress), remotePort);
