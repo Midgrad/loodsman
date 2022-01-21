@@ -34,7 +34,7 @@ jobs:
           COMMAND: ${{ matrix.command }}
         run: sh -c "$COMMAND"
 
-      - run: conan install ${{github.workspace}}/conan/conanfile.txt --install-folder=${{github.workspace}}/deps
+      - run: conan install ${{github.workspace}}/conan/conanfile.txt --install-folder=${{github.workspace}}/deps --build=missing
 
       - name: Configure CMake
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
