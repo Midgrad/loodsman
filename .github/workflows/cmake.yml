@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v2
 
       #      - name: Install Deps
-      - run: sudo apt install python
+      - run: sudo apt install python3
       - run: pip3 install conan
       - run: cd ${{github.workspace}}/conan
       - run: conan install . --install-folder=../deps
