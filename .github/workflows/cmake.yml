@@ -22,7 +22,7 @@ jobs:
         os: [ ubuntu-20.04, windows-2022, macos-11 ]
         include:
           - os: ubuntu-20.04
-          - command: "conan profile update settings.compiler.libcxx=libstdc++11 default"
+            command: "conan profile update settings.compiler.libcxx=libstdc++11 default"
 
     steps:
       - uses: actions/checkout@v2
