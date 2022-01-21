@@ -22,9 +22,9 @@ jobs:
         os: [ ubuntu-20.04, windows-2022, macos-11 ]
         include:
           - os: ubuntu-20.04
-            command: "conan profile update settings.compiler.libcxx=libstdc++11 default"
+            command: conan profile update settings.compiler.libcxx=libstdc++11 default
           - os: windows-2022
-            command: "conan profile update settings.compiler.runtime=MT default"
+            command: conan profile update settings.compiler.runtime=MT default
 
 
 
@@ -35,10 +35,10 @@ jobs:
       - run: conan profile new default --detect
       - run: conan profile update settings.compiler.cppstd=17 default
 
-      - name: Conan gcc abi fix
+      - name: Custom commands
         env:
           COMMAND: ${{ matrix.command }}
-        run: bash -c "${COMMAND}" || true
+        run: bash -c "${COMMAND}"
 
       - run: conan install ${{github.workspace}}/conan/conanfile.txt --install-folder=${{github.workspace}}/deps --build=missing
 
