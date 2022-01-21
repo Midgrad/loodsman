@@ -20,13 +20,20 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-20.04, windows-2022, macos-11 ]
+        include:
+          - os: ubuntu-20.04
+          - command: "conan profile update settings.compiler.libcxx=libstdc++11 default"
 
     steps:
       - uses: actions/checkout@v2
 
       - run: pip3 install conan
       - run: conan profile new default --detect
-      - run: conan profile update settings.compiler.libcxx=libstdc++11 default
+      - name: Conan gcc abi fix
+        env:
+          COMMAND: ${{ matrix.command }}
+        run: sh -c "$COMMAND"
+
       - run: conan install ${{github.workspace}}/conan/conanfile.txt --install-folder=${{github.workspace}}/deps
 
       - name: Configure CMake
