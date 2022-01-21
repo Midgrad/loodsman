@@ -9,8 +9,9 @@ target_include_directories(${PROJECT_NAME} PUBLIC includes)
 
 if(NOT TARGET Boost::Boost)
     message("Boost not found by loodsman, let's find one")
-    message(${CMAKE_HOST_SYSTEM_NAME})
-    include(${CMAKE_SOURCE_DIR}/conan/conan_paths.cmake)
+    # Disabled to allow cmake find boost from the system
+    #    set(Boost_NO_SYSTEM_PATHS ON)
+    set(BOOST_ROOT "${CMAKE_SOURCE_DIR}/deps/boost")
     FIND_PACKAGE(Boost REQUIRED)
 endif()
 

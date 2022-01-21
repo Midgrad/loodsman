@@ -31,11 +31,14 @@
 *.out
 *.app
 
+# Directories
+/release
+/debug
+/deps
+
 # Cmake
 CMakeLists.txt.user*
 /build*
-/release
-/debug
 /cmake-build-release*
 /cmake-build-debug*
 

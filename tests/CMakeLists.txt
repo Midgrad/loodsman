@@ -3,9 +3,8 @@ project(loodsman_tests)
 add_executable(${PROJECT_NAME} "")
 
 if(NOT TARGET GTest::GTest)
-    message("Boost not found by loodsman, let's find one")
-    message(${CMAKE_HOST_SYSTEM_NAME})
-    include(${CMAKE_SOURCE_DIR}/conan/conan_paths.cmake)
+    message("GTest not found by loodsman, let's find one")
+    set(GTEST_ROOT "${CMAKE_SOURCE_DIR}/deps/gtest")
     FIND_PACKAGE(GTest REQUIRED)
 endif()
 
