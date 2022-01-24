@@ -7,15 +7,13 @@ target_sources(${PROJECT_NAME} PRIVATE ${SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE sources)
 target_include_directories(${PROJECT_NAME} PUBLIC includes)
 
-if (NOT TARGET Boost_LIBRARIES)
+if(NOT TARGET Boost::Boost)
     message("Boost not found by loodsman, let's find one")
-    message(${CMAKE_HOST_SYSTEM_NAME})
-    if (CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
-        FIND_PACKAGE(Boost COMPONENTS system REQUIRED)
-    elseif (CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux")
-        FIND_PACKAGE(Boost REQUIRED)
-    endif ()
-    INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
-endif ()
+    # Disabled to allow cmake find boost from the system
+    #    set(Boost_NO_SYSTEM_PATHS ON)
+    set(BOOST_ROOT "${CMAKE_SOURCE_DIR}/deps/boost")
+    FIND_PACKAGE(Boost REQUIRED)
+endif()
 
-target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} pthread)
+
+target_link_libraries(${PROJECT_NAME} Boost::headers)
