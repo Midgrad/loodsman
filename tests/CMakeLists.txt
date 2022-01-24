@@ -6,10 +6,10 @@ add_executable(${PROJECT_NAME} "")
 file(GLOB SOURCES "./*.h" "./*.hpp" "./*.cpp")
 target_sources(${PROJECT_NAME} PRIVATE ${SOURCES})
 
-if(TARGET GTest)
-    message("loodsman: GTest is defined already, trying to link")
-    target_link_libraries(${PROJECT_NAME} GTest loodsman)
-elseif(NOT TARGET GTest::GTest)
+if(TARGET gtest) # Temporary solution to link gtest-submodule
+    message("loodsman: gtest is defined already, trying to link")
+    target_link_libraries(${PROJECT_NAME} gtest loodsman)
+elseif(NOT TARGET GTest::GTest) # Assuming standalone build
     message("GTest not found by loodsman, let's find one")
     set(GTEST_ROOT "${CMAKE_SOURCE_DIR}/deps/gtest")
     FIND_PACKAGE(GTest REQUIRED)
