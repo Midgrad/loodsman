@@ -8,7 +8,7 @@ target_sources(${PROJECT_NAME} PRIVATE ${SOURCES})
 
 if(TARGET gtest) # Temporary solution to link gtest-submodule
     message("loodsman: gtest is defined already, trying to link")
-    target_link_libraries(${PROJECT_NAME} gtest loodsman)
+    target_link_libraries(${PROJECT_NAME} gtest_main loodsman)
 elseif(NOT TARGET GTest::GTest) # Assuming standalone build
     message("GTest not found by loodsman, let's find one")
     set(GTEST_ROOT "${CMAKE_SOURCE_DIR}/deps/gtest")
