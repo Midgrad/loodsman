@@ -98,7 +98,6 @@ jobs:
           name: build_linux_artifact
       - run: ls -a
       - name: Test
-        working-directory: ${{github.workspace}}/build
         run: ctest -C ${{env.BUILD_TYPE}}
 
   test_macos:
@@ -112,7 +111,6 @@ jobs:
           name: build_macos_artifact
       - run: ls -a
       - name: Test
-        working-directory: ${{github.workspace}}/build
         run: ctest -C ${{env.BUILD_TYPE}}
 
   test_windows:
@@ -125,5 +123,4 @@ jobs:
         with:
           name: build_windows_artifact
       - name: Test
-        working-directory: ${{github.workspace}}/build
         run: ctest -C ${{env.BUILD_TYPE}}
