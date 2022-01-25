@@ -41,7 +41,7 @@ jobs:
           path: tarball.tar
 
 
-    conan profile update settings.compiler.cppstd=17 default
+    #    conan profile update settings.compiler.cppstd=17 default
     build_macos:
       name: Build on macOS
       runs-on: macos-11
