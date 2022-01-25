@@ -36,7 +36,7 @@ jobs:
           pwd
 
       - name: Tar files
-        run: tar -cvf tarball.tar ${{github.workspace}}/build
+        run: tar -cvf tarball.tar -C ${{github.workspace}}/build .
 
       - name: Upload artifacts for a ${{ github.job }} job
         uses: actions/upload-artifact@v2
