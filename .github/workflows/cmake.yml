@@ -115,7 +115,7 @@ jobs:
           pwd
 
       - name: Untar files
-        run: tar -xvf tarball.tar ${{github.workspace}}/build
+        run: tar -xvf tarball.tar
 
       - run: |
           ls -a
