@@ -31,6 +31,12 @@ jobs:
       - name: Build
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
+      - name: Upload artifacts for a ${{ github.job }} job
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{github.job}}_artifact
+          path: ${{github.workspace}}/build
+
   # conan profile update settings.compiler.cppstd=17 default
   build_macos:
     name: Build on macOS
@@ -49,6 +55,12 @@ jobs:
 
       - name: Build
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+      - name: Upload artifacts for a ${{ github.job }} job
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{github.job}}_artifact
+          path: ${{github.workspace}}/build
 
   build_windows:
     name: Build on Windows
@@ -69,10 +81,49 @@ jobs:
       - name: Build
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
-#  test:
-#    steps:
-#      - name: Test
-#        working-directory: ${{github.workspace}}/build
-#        # Execute tests defined by the CMake configuration.
-#        # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-#        run: ctest -C ${{env.BUILD_TYPE}}
+      - name: Upload artifacts for a ${{ github.job }} job
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{github.job}}_artifact
+          path: ${{github.workspace}}/build
+
+  test_linux:
+    name: Test on linux
+    runs-on: ubuntu-20.04
+    needs: build_linux
+    steps:
+      - name: Download artifacts for a ${{ github.job }} job
+        uses: actions/download-artifact@v2
+        with:
+          name: build_linux_artifact
+      - run: ls -a
+      - name: Test
+        working-directory: ${{github.workspace}}/build
+        run: ctest -C ${{env.BUILD_TYPE}}
+
+  test_macos:
+    name: Test on macOS
+    runs-on: macos-11
+    needs: build_macos
+    steps:
+      - name: Download artifacts for a ${{ github.job }} job
+        uses: actions/download-artifact@v2
+        with:
+          name: build_macos_artifact
+      - run: ls -a
+      - name: Test
+        working-directory: ${{github.workspace}}/build
+        run: ctest -C ${{env.BUILD_TYPE}}
+
+  test_windows:
+    name: Test on windows
+    runs-on: windows-2019
+    needs: build_windows
+    steps:
+      - name: Download artifacts for a ${{ github.job }} job
+        uses: actions/download-artifact@v2
+        with:
+          name: build_windows_artifact
+      - name: Test
+        working-directory: ${{github.workspace}}/build
+        run: ctest -C ${{env.BUILD_TYPE}}
