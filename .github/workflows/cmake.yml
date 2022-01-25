@@ -110,13 +110,17 @@ jobs:
           name: build_linux_artifact
       #          path: ./build
 
+      - run: |
+          ls -a
+          pwd
+
       - name: Untar files
         run: tar -xvf tarball.tar ${{github.workspace}}/build
 
       - run: |
           ls -a
           pwd
-          
+
       - name: Test
         working-directory: ${{github.workspace}}/build
         run: ctest -C ${{env.BUILD_TYPE}}
