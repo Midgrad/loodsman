@@ -108,13 +108,14 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: build_linux_artifact
-      #          path: ./build
+          path: ./build
 
       - run: |
           ls -a
           pwd
 
       - name: Untar files
+        working-directory: ${{github.workspace}}/build
         run: tar -xvf tarball.tar
 
       - run: |
