@@ -31,13 +31,16 @@ jobs:
       - name: Build
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
+      - run: |
+          ls -a
+          pwd
+
       - name: Upload artifacts for a ${{ github.job }} job
         uses: actions/upload-artifact@v2
         with:
           name: ${{github.job}}_artifact
-          path: |
-            ${{github.workspace}}/build
-            ${{github.workspace}}/${{env.BUILD_TYPE}}
+          path: ${{github.workspace}}/build
+
 
   # conan profile update settings.compiler.cppstd=17 default
   #  build_macos:
@@ -102,9 +105,12 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: build_linux_artifact
-      - run: ls -a
+          path: ./build
+      - run: |
+          ls -a
+          pwd
       - name: Test
-        working-directory: ${{github.workspace}}//build
+        working-directory: ${{github.workspace}}/build
         run: ctest -C ${{env.BUILD_TYPE}}
 
 #  test_macos:
