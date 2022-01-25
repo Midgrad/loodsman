@@ -35,11 +35,14 @@ jobs:
           ls -a
           pwd
 
+      - name: Tar files
+        run: tar -cvf tarball.tar ${{github.workspace}}/build
+
       - name: Upload artifacts for a ${{ github.job }} job
         uses: actions/upload-artifact@v2
         with:
           name: ${{github.job}}_artifact
-          path: ${{github.workspace}}/build
+          path: tarball.tar
 
 
   # conan profile update settings.compiler.cppstd=17 default
@@ -105,10 +108,15 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: build_linux_artifact
-          path: ./build
+      #          path: ./build
+
+      - name: Untar files
+        run: tar -xvf tarball.tar ${{github.workspace}}/build
+
       - run: |
           ls -a
           pwd
+          
       - name: Test
         working-directory: ${{github.workspace}}/build
         run: ctest -C ${{env.BUILD_TYPE}}
