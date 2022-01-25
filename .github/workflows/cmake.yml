@@ -92,9 +92,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ${{github.job}}_artifact
-          path:
-            - ${{github.workspace}}/build
-            - ${{github.workspace}}/${{env.BUILD_TYPE}}
+          path: ${{github.workspace}}/build
 
   test_linux:
     name: Test on linux
