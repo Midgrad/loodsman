@@ -5,7 +5,7 @@ on:
     branches:
       - 'main'
       - 'develop'
-    tags
+    tags:
   pull_request:
 
 env:
