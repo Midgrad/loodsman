@@ -68,33 +68,33 @@ jobs:
         with:
           name: ${{github.job}}_artifact
           path: tarball.tar
-  #
-  #  build_windows:
-  #    name: Build on Windows
-  #    runs-on: windows-2019
-  #    steps:
-  #      - uses: actions/checkout@v2
-  #
-  #      - name: Conan install and usage
-  #        run: |
-  #          pip3 install conan
-  #          conan profile new default --detect
-  #          conan profile update settings.compiler.runtime=MD default
-  #          conan install ${{github.workspace}}/conan/conanfile.txt --install-folder=${{github.workspace}}/deps --build=missing
-  #
-  #      - name: Configure CMake
-  #        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-  #
-  #      - name: Build
-  #        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
-  #
-  #      - name: Upload artifacts for a ${{ github.job }} job
-  #        uses: actions/upload-artifact@v2
-  #        with:
-  #          name: ${{github.job}}_artifact
-  #          path:
-  #            - ${{github.workspace}}/build
-  #            - ${{github.workspace}}/${{env.BUILD_TYPE}}
+
+  build_windows:
+    name: Build on Windows
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Conan install and usage
+        run: |
+          pip3 install conan
+          conan profile new default --detect
+          conan profile update settings.compiler.runtime=MD default
+          conan install ${{github.workspace}}/conan/conanfile.txt --install-folder=${{github.workspace}}/deps --build=missing
+
+      - name: Configure CMake
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+      - name: Upload artifacts for a ${{ github.job }} job
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{github.job}}_artifact
+          path:
+            - ${{github.workspace}}/build
+            - ${{github.workspace}}/${{env.BUILD_TYPE}}
 
   test_linux:
     name: Test on linux
@@ -133,15 +133,15 @@ jobs:
       - name: Test
         working-directory: ${{github.workspace}}/build
         run: ctest -C ${{env.BUILD_TYPE}}
-#
-#  test_windows:
-#    name: Test on windows
-#    runs-on: windows-2019
-#    needs: build_windows
-#    steps:
-#      - name: Download artifacts for a ${{ github.job }} job
-#        uses: actions/download-artifact@v2
-#        with:
-#          name: build_windows_artifact
-#      - name: Test
-#        run: ctest -C ${{env.BUILD_TYPE}}
+
+  test_windows:
+    name: Test on windows
+    runs-on: windows-2019
+    needs: build_windows
+    steps:
+      - name: Download artifacts for a ${{ github.job }} job
+        uses: actions/download-artifact@v2
+        with:
+          name: build_windows_artifact
+      - name: Test
+        run: ctest -C ${{env.BUILD_TYPE}}
