@@ -39,6 +39,12 @@ jobs:
           curl -sSLo $HOME/.sonar/build-wrapper-linux-x86.zip ${{ env.BUILD_WRAPPER_DOWNLOAD_URL }}
           unzip -o $HOME/.sonar/build-wrapper-linux-x86.zip -d $HOME/.sonar/
           echo "$HOME/.sonar/build-wrapper-linux-x86" >> $GITHUB_PATH
+      - name: Conan install and usage
+        run: |
+          pip3 install conan
+          conan profile new default --detect
+          conan profile update settings.compiler.libcxx=libstdc++11 default
+          conan install ${{github.workspace}}/conan/conanfile.txt --install-folder=${{github.workspace}}/deps --build=missing
       - name: Run build-wrapper
         run: |
           cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release
