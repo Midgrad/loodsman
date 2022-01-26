@@ -47,7 +47,7 @@ private:
     int connect(const std::string& remoteAddress, int remotePort);
 
     boost::asio::ip::udp::endpoint m_remoteEndpoint;
-    char m_buffer[MAX_PACKET_LENGTH];
+    char m_buffer[LOODSMAN_MAX_PACKET_LENGTH];
     boost::asio::ip::udp::socket m_socket;
     boost::system::error_code m_errorCode;
 };

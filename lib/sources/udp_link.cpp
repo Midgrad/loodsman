@@ -23,7 +23,7 @@ int UdpLink::open()
     boost::system::error_code error;
     m_socket.open(ip::udp::v4(), error);
     if (error.value())
-        debugPrint(error.message());
+        utils::debugPrint(error.message());
     return error.value();
 }
 
@@ -32,7 +32,7 @@ int UdpLink::close()
     boost::system::error_code error;
     m_socket.close();
     if (error.value())
-        debugPrint(error.message());
+        utils::debugPrint(error.message());
     return error.value();
 }
 
@@ -41,7 +41,7 @@ int UdpLink::bind(int port)
     boost::system::error_code error;
     m_socket.bind(ip::udp::endpoint(ip::udp::v4(), port), error);
     if (error.value())
-        debugPrint(error.message());
+        utils::debugPrint(error.message());
     return error.value();
 }
 
@@ -52,7 +52,7 @@ int UdpLink::connect(const string& remoteAddress, int remotePort)
     boost::system::error_code error;
     m_socket.connect(ip::udp::endpoint(ip::make_address(remoteAddress), remotePort), error);
     if (error.value())
-        debugPrint(error.message());
+        utils::debugPrint(error.message());
     return error.value();
 }
 

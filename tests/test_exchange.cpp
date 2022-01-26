@@ -1,9 +1,8 @@
-#include "link_factory.h"
 #include <gtest/gtest.h>
-#include <iostream>
+#include <string>
 
-using std::cout;
-using std::endl;
+#include "link_factory.h"
+
 using std::string;
 using namespace loodsman;
 
@@ -55,40 +54,29 @@ TEST(intergationTests, SyncExchangeTest)
 
     string dataToSend{};
 
-    for (int i = 0; i < (MAX_PACKET_LENGTH); i++)
+    for (int i = 0; i < (LOODSMAN_MAX_PACKET_LENGTH); i++)
     {
         dataToSend.append("K");
     }
 
     // ------------------------------------
 
-    cout << "Sending... " << endl;
     std::size_t sent_data_size = linkSender->send(dataToSend);
-    cout << "Sent bytes: " << sent_data_size << endl;
-    cout << "Error messages: " << linkSender->errorMessage() << endl;
 
     EXPECT_EQ(linkSender->errorCode(), 0);
-    EXPECT_EQ(sent_data_size, MAX_PACKET_LENGTH);
+    EXPECT_EQ(sent_data_size, LOODSMAN_MAX_PACKET_LENGTH);
 
-    cout << "Listening..." << endl;
-    ;
     string received_data(linkListen->receive());
-    cout << "Error messages: " << linkListen->errorMessage() << endl;
 
     EXPECT_EQ(linkListen->errorCode(), 0);
-    EXPECT_EQ(received_data.size(), MAX_PACKET_LENGTH);
+    EXPECT_EQ(received_data.size(), LOODSMAN_MAX_PACKET_LENGTH);
 
     dataToSend = "Test message";
-    cout << "Sending..." << endl;
     sent_data_size = linkListen->send(dataToSend);
-    cout << "Sent bytes: " << sent_data_size << endl;
-    cout << "Error messages: " << linkListen->errorMessage() << endl;
 
     EXPECT_EQ(linkListen->errorCode(), 0);
     EXPECT_EQ(sent_data_size, dataToSend.size());
 
-    cout << "Listening" << endl;
-    ;
     received_data = string(linkSender->receive());
 
     EXPECT_EQ(linkSender->errorCode(), 0);
@@ -100,13 +88,11 @@ TEST(intergationTests, SyncExchangeTest)
 
 void sendHandler(std::size_t bytesTransferred)
 {
-    cout << "Send handler:Sent bytes: " << bytesTransferred << endl;
     EXPECT_NE(bytesTransferred, 0);
 }
 
 void receiveHandler(const std::string& data)
 {
-    cout << "Receive handler:Received data: " << data << endl;
     EXPECT_NE(data.size(), 0);
 }
 
@@ -131,51 +117,26 @@ TEST(intergationTests, AsyncExchangeTest)
 
     string dataToSend{};
 
-    for (int i = 0; i < (MAX_PACKET_LENGTH); i++)
+    for (int i = 0; i < (LOODSMAN_MAX_PACKET_LENGTH); i++)
     {
         dataToSend.append("K");
     }
 
     // ------------------------------------
 
-    cout << "Sending... " << endl;
     linkSender->asyncSend(dataToSend, sendHandler);
 
-    //    cout << "Error messages: " << linkSender->errorMessage() << endl;
-
-    //    EXPECT_EQ(linkSender->errorCode(), 0);
-
-    cout << "Listening..." << endl;
-    ;
     linkListen->asyncReceive(receiveHandler);
 
-    cout << "This message should be displayed before " << endl;
-
-//    factory.checkHandlers();
     linkListen->checkHandlers();
     linkSender->checkHandlers();
 
-
-    //    cout << "Error messages: " << linkListen->errorMessage() << endl;
-    //    EXPECT_EQ(linkListen->errorCode(), 0);
-
     dataToSend = "Test message";
-    cout << "Sending..." << endl;
 
     linkListen->asyncSend(dataToSend, sendHandler);
-
-    //    cout << "Error messages: " << linkListen->errorMessage() << endl;
-    //
-    //    EXPECT_EQ(linkListen->errorCode(), 0);
-
-    //
-    cout << "Listening" << endl;
 
     linkSender->asyncReceive(receiveHandler);
 
     linkListen->checkHandlers();
     linkSender->checkHandlers();
-
-    //    delete linkListen;
-    //    delete linkSender;
 }

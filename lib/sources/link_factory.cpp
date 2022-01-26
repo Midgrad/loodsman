@@ -1,6 +1,5 @@
 #include "link_factory.h"
 
-#include "i_link.h"
 #include "udp_link.h"
 #include "utils.h"
 
@@ -26,29 +25,29 @@ LinkAsync* LinkFactory::create(LinkType type, int localPort, const std::string& 
             link = new UdpLink(localPort, localAddress, remotePort, remoteAddress);
             break;
         case LinkType::tcp:
-            std::cout << "TCP Link type is not implemented" << std::endl;
+            utils::debugPrint("TCP Link type is not implemented");
             // TODO: Fix magic number, sync error codes with boost::system::system_error
             m_errorCode = 1;
             break;
         case LinkType::serial:
-            std::cout << "Serial Link type is not implemented" << std::endl;
+            utils::debugPrint("Serial Link type is not implemented");
             // TODO: Fix magic number, sync error codes with boost::system::system_error
             m_errorCode = 1;
             break;
         default:
             m_errorCode = 2;
-            std::cout << "Unknown link type" << std::endl;
+            utils::debugPrint("Unknown link type");
         }
     }
     catch (const boost::system::system_error& error)
     {
-        debugPrint("boost system error");
+        utils::debugPrint("boost system error");
         m_errorCode = error.code().value();
-        std::cout << error.code().message();
+        utils::debugPrint(error.code().message());
     }
     catch (...)
     {
-        debugPrint("Generic error");
+        utils::debugPrint("Generic error");
         m_errorCode = 1;
     }
 
