@@ -54,10 +54,7 @@ jobs:
         working-directory: ${{github.workspace}}/build
         run: ctest -C ${{env.BUILD_TYPE}}
 
-      - name: list
-        working-directory: ${{github.workspace}}/build
-        run: ls -a
-
+      # https://stackoverflow.com/questions/37957583/how-to-use-gcov-with-cmake
       - name: gcov
         working-directory: ${{github.workspace}}/build
         run: find . -name '*.gcda' | xargs gcov
