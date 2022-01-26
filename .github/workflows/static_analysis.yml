@@ -60,9 +60,7 @@ jobs:
 
       - name: gcov
         working-directory: ${{github.workspace}}/build
-        run: |
-          gcov args.
-          find . -name '*.gcda' | xargs gcov
+        run: find . -name '*.gcda' | xargs gcov
 
       - name: Run sonar-scanner
         env:
