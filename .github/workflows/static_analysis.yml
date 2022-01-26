@@ -47,8 +47,18 @@ jobs:
           conan install ${{github.workspace}}/conan/conanfile.txt --install-folder=${{github.workspace}}/deps --build=missing
       - name: Run build-wrapper
         run: |
-          cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release
+          cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="--coverage" -DCMAKE_C_FLAGS="--coverage" -DCMAKE_EXE_LINKER_FLAGS="--coverage"
           build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} cmake --build ${{github.workspace}}/build --config Release
+
+      - name: Test
+        working-directory: ${{github.workspace}}/build
+        run: ctest -C ${{env.BUILD_TYPE}}
+
+      # https://stackoverflow.com/questions/37957583/how-to-use-gcov-with-cmake
+      - name: gcov
+        working-directory: ${{github.workspace}}/build
+        run: find . -name '*.gcda' | xargs gcov
+
       - name: Run sonar-scanner
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
