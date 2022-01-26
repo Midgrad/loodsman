@@ -98,7 +98,8 @@ void receiveHandler(std::string_view data)
 TEST(intergationTests, AsyncExchangeTest)
 {
     LinkFactory factory;
-    unique_ptr<LinkAsync> linkSender(factory.create(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1"));
+    unique_ptr<LinkAsync> linkSender(
+        factory.create(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1"));
 
     int result = factory.errorCode();
 
