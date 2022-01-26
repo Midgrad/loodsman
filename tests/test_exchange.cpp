@@ -1,41 +1,42 @@
 #include <gtest/gtest.h>
-#include <string>
+#include <memory>
+#include <string_view>
 
 #include "link_factory.h"
 
 using std::string;
+using std::unique_ptr;
 using namespace loodsman;
 
 TEST(intergationTests, SenderConstructorTest)
 {
     LinkFactory factory;
-    LinkAsync* linkSender = factory.create(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1");
+
+    unique_ptr<ILink> linkSender(factory.create(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1"));
 
     int result = factory.errorCode();
 
     EXPECT_EQ(result, 0);
     ASSERT_NE(linkSender, nullptr);
-
-    delete linkSender;
 }
 
 TEST(intergationTests, ReceiveConstructorTest)
 {
     LinkFactory factory;
-    ILink* linkListen = factory.create(LinkType::udp, 5000);
+
+    unique_ptr<ILink> linkListen(factory.create(LinkType::udp, 5000));
 
     int result = factory.errorCode();
 
     EXPECT_EQ(result, 0);
     ASSERT_NE(linkListen, nullptr);
-
-    delete linkListen;
 }
 
 TEST(intergationTests, SyncExchangeTest)
 {
     LinkFactory factory;
-    LinkAsync* linkSender = factory.create(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1");
+
+    unique_ptr<ILink> linkSender(factory.create(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1"));
 
     int result = factory.errorCode();
 
@@ -43,7 +44,7 @@ TEST(intergationTests, SyncExchangeTest)
     ASSERT_NE(linkSender, nullptr);
 
     LinkFactory factoryListen;
-    ILink* linkListen = factoryListen.create(LinkType::udp, 5000);
+    unique_ptr<ILink> linkListen(factoryListen.create(LinkType::udp, 5000));
 
     result = factoryListen.errorCode();
 
@@ -54,7 +55,7 @@ TEST(intergationTests, SyncExchangeTest)
 
     string dataToSend{};
 
-    for (int i = 0; i < (LOODSMAN_MAX_PACKET_LENGTH); i++)
+    for (int i = 0; i < LOODSMAN_MAX_PACKET_LENGTH; i++)
     {
         dataToSend.append("K");
     }
@@ -82,8 +83,6 @@ TEST(intergationTests, SyncExchangeTest)
     EXPECT_EQ(linkSender->errorCode(), 0);
     EXPECT_EQ(received_data.size(), dataToSend.size());
 
-    delete linkListen;
-    delete linkSender;
 }
 
 void sendHandler(std::size_t bytesTransferred)
@@ -91,7 +90,7 @@ void sendHandler(std::size_t bytesTransferred)
     EXPECT_NE(bytesTransferred, 0);
 }
 
-void receiveHandler(const std::string& data)
+void receiveHandler(std::string_view data)
 {
     EXPECT_NE(data.size(), 0);
 }
@@ -99,14 +98,14 @@ void receiveHandler(const std::string& data)
 TEST(intergationTests, AsyncExchangeTest)
 {
     LinkFactory factory;
-    LinkAsync* linkSender = factory.create(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1");
+    unique_ptr<LinkAsync> linkSender(factory.create(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1"));
 
     int result = factory.errorCode();
 
     EXPECT_EQ(result, 0);
     ASSERT_NE(linkSender, nullptr);
 
-    LinkAsync* linkListen = factory.create(LinkType::udp, 5000);
+    unique_ptr<LinkAsync> linkListen(factory.create(LinkType::udp, 5000));
 
     result = factory.errorCode();
 
@@ -117,7 +116,7 @@ TEST(intergationTests, AsyncExchangeTest)
 
     string dataToSend{};
 
-    for (int i = 0; i < (LOODSMAN_MAX_PACKET_LENGTH); i++)
+    for (int i = 0; i < LOODSMAN_MAX_PACKET_LENGTH; i++)
     {
         dataToSend.append("K");
     }
