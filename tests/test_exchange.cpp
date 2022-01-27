@@ -30,16 +30,16 @@ TEST_F(intergationTests, SenderConstructorTest)
 {
     unique_ptr<ILink> linkSender(factory.create(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1"));
     ASSERT_NE(linkSender, nullptr);
-    EXPECT_EQ(linkSender->errorCode(), 0);
-    EXPECT_EQ(factory.errorCode(), 0);
+    EXPECT_EQ(linkSender->errorCode(), boost::system::errc::errc_t::success);
+    EXPECT_EQ(factory.errorCode(), boost::system::errc::errc_t::success);
 }
 
 TEST_F(intergationTests, ReceiveConstructorUdpTest)
 {
     unique_ptr<ILink> linkListen(factory.create(LinkType::udp, 5000));
     ASSERT_NE(linkListen, nullptr);
-    EXPECT_EQ(linkListen->errorCode(), 0);
-    EXPECT_EQ(factory.errorCode(), 0);
+    EXPECT_EQ(linkListen->errorCode(), boost::system::errc::errc_t::success);
+    EXPECT_EQ(factory.errorCode(), boost::system::errc::errc_t::success);
 }
 
 TEST_F(intergationTests, ReceiveConstructorUnknownTest)
@@ -52,12 +52,12 @@ TEST_F(intergationTests, ReceiveConstructorBusyPortTest)
 {
     unique_ptr<ILink> linkListen(factory.create(LinkType::udp, 5000));
     ASSERT_NE(linkListen, nullptr);
-    EXPECT_EQ(factory.errorCode(), 0);
-    EXPECT_EQ(linkListen->errorCode(), 0);
+    EXPECT_EQ(factory.errorCode(), boost::system::errc::errc_t::success);
+    EXPECT_EQ(linkListen->errorCode(), boost::system::errc::errc_t::success);
 
     unique_ptr<ILink> linkListenSamePort(factory.create(LinkType::udp, 5000));
     ASSERT_EQ(linkListenSamePort, nullptr);
-    EXPECT_EQ(factory.errorCode(), 48); // "Address already in use"
+    EXPECT_EQ(factory.errorCode(), boost::system::errc::errc_t::address_in_use);
 }
 
 TEST_F(intergationTests, SyncExchangeTest)
@@ -81,25 +81,24 @@ TEST_F(intergationTests, SyncExchangeTest)
 
     std::size_t sent_data_size = linkSender->send(dataToSend);
 
-    EXPECT_EQ(linkSender->errorCode(), 0);
+    EXPECT_EQ(linkSender->errorCode(), boost::system::errc::errc_t::success);
     EXPECT_EQ(sent_data_size, LOODSMAN_MAX_PACKET_LENGTH);
 
     string received_data(linkListen->receive());
 
-    EXPECT_EQ(linkListen->errorCode(), 0);
+    EXPECT_EQ(linkListen->errorCode(), boost::system::errc::errc_t::success);
     EXPECT_EQ(received_data.size(), LOODSMAN_MAX_PACKET_LENGTH);
 
     dataToSend = "Test message";
     sent_data_size = linkListen->send(dataToSend);
 
-    EXPECT_EQ(linkListen->errorCode(), 0);
+    EXPECT_EQ(linkListen->errorCode(), boost::system::errc::errc_t::success);
     EXPECT_EQ(sent_data_size, dataToSend.size());
 
     received_data = string(linkSender->receive());
 
-    EXPECT_EQ(linkSender->errorCode(), 0);
+    EXPECT_EQ(linkSender->errorCode(), boost::system::errc::errc_t::success);
     EXPECT_EQ(received_data.size(), dataToSend.size());
-
 }
 
 TEST_F(intergationTests, AsyncExchangeTest)
