@@ -25,12 +25,13 @@ endif(LOODSMAN_VERBOSE_OUTPUT)
 add_subdirectory(lib)
 
 if(NOT DEFINED TESTS_ENABLED)
-    option(TESTS_ENABLED "Enable tests" ON)
+    option(TESTS_ENABLED "Enable tests" OFF)
 endif(NOT DEFINED TESTS_ENABLED)
 
 # Tests
 if(TESTS_ENABLED)
     enable_testing()
     add_subdirectory(tests)
+    set(LOODSMAN_VERBOSE_OUTPUT ON)
 endif(TESTS_ENABLED)
 
