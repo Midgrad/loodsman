@@ -30,7 +30,6 @@ TEST_F(intergationTests, SenderConstructorTest)
 {
     unique_ptr<ILink> linkSender(factory.create(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1"));
     ASSERT_NE(linkSender, nullptr);
-    EXPECT_EQ(linkSender->errorMessage(), "Undefined error: 0");
     EXPECT_EQ(linkSender->errorCode(), 0);
     EXPECT_EQ(factory.errorCode(), 0);
 }
@@ -39,7 +38,6 @@ TEST_F(intergationTests, ReceiveConstructorUdpTest)
 {
     unique_ptr<ILink> linkListen(factory.create(LinkType::udp, 5000));
     ASSERT_NE(linkListen, nullptr);
-    EXPECT_EQ(linkListen->errorMessage(), "Undefined error: 0");
     EXPECT_EQ(linkListen->errorCode(), 0);
     EXPECT_EQ(factory.errorCode(), 0);
 }
@@ -55,13 +53,11 @@ TEST_F(intergationTests, ReceiveConstructorBusyPortTest)
     unique_ptr<ILink> linkListen(factory.create(LinkType::udp, 5000));
     ASSERT_NE(linkListen, nullptr);
     EXPECT_EQ(factory.errorCode(), 0);
-    EXPECT_EQ(linkListen->errorMessage(), "Undefined error: 0");
     EXPECT_EQ(linkListen->errorCode(), 0);
 
     unique_ptr<ILink> linkListenSamePort(factory.create(LinkType::udp, 5000));
     ASSERT_EQ(linkListenSamePort, nullptr);
-    EXPECT_EQ(factory.errorCode(), 48);
-    EXPECT_EQ(factory.errorMessage(), "Address already in use");
+    EXPECT_EQ(factory.errorCode(), 48); // "Address already in use"
 }
 
 TEST_F(intergationTests, SyncExchangeTest)
