@@ -57,7 +57,11 @@ TEST_F(intergationTests, ReceiveConstructorBusyPortTest)
 
     unique_ptr<ILink> linkListenSamePort(factory.create(LinkType::udp, 5000));
     ASSERT_EQ(linkListenSamePort, nullptr);
+#ifdef _WIN32
+    EXPECT_EQ(factory.errorCode(), WSAEADDRINUSE);
+#else
     EXPECT_EQ(factory.errorCode(), boost::system::errc::errc_t::address_in_use);
+#endif
 }
 
 TEST_F(intergationTests, SyncExchangeTest)
