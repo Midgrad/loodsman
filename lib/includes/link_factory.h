@@ -27,10 +27,12 @@ public:
 
     //    LinkAsync* create(LinkType type ,int baudRate);
 
+    std::string errorMessage() const override;
     int errorCode() const override;
 
 private:
-    int m_errorCode;
+    //    int m_errorCode;
+    boost::system::error_code m_errorCode;
 
 public:
 };

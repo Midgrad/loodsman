@@ -6,7 +6,7 @@
 
 namespace utils
 {
-inline void debugPrint([[maybe_unused]] std::string_view message)
+inline void debugPrint(std::string_view message)
 {
 #ifdef VERBOSE_OUTPUT
     std::cout << message << std::endl;

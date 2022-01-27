@@ -18,20 +18,26 @@ project(loodsman VERSION 0.6.1
 add_compile_definitions(LOODSMAN_MAX_PACKET_LENGTH=500)
 
 option(LOODSMAN_VERBOSE_OUTPUT "Print loodsman messages to stdout" OFF)
-if(LOODSMAN_VERBOSE_OUTPUT)
-    add_compile_definitions(VERBOSE_OUTPUT)
-endif(LOODSMAN_VERBOSE_OUTPUT)
-
-add_subdirectory(lib)
 
 if(NOT DEFINED LOODSMAN_TESTS_ENABLED)
     option(LOODSMAN_TESTS_ENABLED "Enable tests" OFF)
 endif(NOT DEFINED LOODSMAN_TESTS_ENABLED)
 
+if(LOODSMAN_TESTS_ENABLED)
+    set(LOODSMAN_VERBOSE_OUTPUT ON)
+endif(LOODSMAN_TESTS_ENABLED)
+
+if(LOODSMAN_VERBOSE_OUTPUT)
+    add_compile_definitions(VERBOSE_OUTPUT)
+    message("Enabled loodsman verbose output")
+endif(LOODSMAN_VERBOSE_OUTPUT)
+
+add_subdirectory(lib)
+
 # Tests
 if(LOODSMAN_TESTS_ENABLED)
     enable_testing()
     add_subdirectory(tests)
-    set(LOODSMAN_VERBOSE_OUTPUT ON)
 endif(LOODSMAN_TESTS_ENABLED)
+
 

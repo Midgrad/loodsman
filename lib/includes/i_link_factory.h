@@ -12,6 +12,7 @@ public:
 
 //    virtual ILink* create() = 0;
 
+    virtual std::string errorMessage() const = 0;
     virtual int errorCode() const = 0;
 };
 } // namespace loodsman
