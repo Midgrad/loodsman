@@ -14,99 +14,89 @@ env:
 jobs:
   build_linux:
     name: Build on linux
-    runs-on: &ubuntu ubuntu-20.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
 
-      - name: Conan install
-        run: &conan_install pip3 install conan
-
-      - name: Conan profile detect
-        run: &conan_detect conan profile new default --detect
-
-      - name: Conan apply os-specific settings
-        run: conan profile update settings.compiler.libcxx=libstdc++11 default
-
-      - name: Conan install dependencies
-        run: &conan_install conan install ${{github.workspace}}/conan/conanfile.txt --install-folder=${{github.workspace}}/deps --build=missing
+      - name: Conan install and usage
+        run: |
+          pip3 install conan
+          conan profile new default --detect
+          conan profile update settings.compiler.libcxx=libstdc++11 default
+          conan install ${{github.workspace}}/conan/conanfile.txt --install-folder=${{github.workspace}}/deps --build=missing
 
       - name: Configure CMake
-        run: &configure cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
       - name: Build
-        run: &build cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
       - name: Tar files
-        run: &tar tar -cvf tarball.tar -C ${{github.workspace}}/build .
+        run: tar -cvf tarball.tar -C ${{github.workspace}}/build .
 
       - name: Upload artifacts for a ${{ github.job }} job
         uses: actions/upload-artifact@v2
-        with: &upload_with
+        with:
           name: ${{github.job}}_artifact
           path: tarball.tar
 
+
+    #    conan profile update settings.compiler.cppstd=17 default
   build_macos:
     name: Build on macOS
-    runs-on: &macos macos-11
+    runs-on: macos-11
     steps:
       - uses: actions/checkout@v2
 
-      - name: Conan install
-        run: *conan_install
-
-      - name: Conan profile detect
-        run: *conan_detect
-
-      - name: Conan install dependencies
-        run: *conan_install
+      - name: Conan install and usage
+        run: |
+          pip3 install conan
+          conan profile new default --detect
+          conan install ${{github.workspace}}/conan/conanfile.txt --install-folder=${{github.workspace}}/deps --build=missing
 
       - name: Configure CMake
-        run: *configure
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
       - name: Build
-        run: *build
+        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
       - name: Tar files
-        run: *tar
+        run: tar -cvf tarball.tar -C ${{github.workspace}}/build .
 
       - name: Upload artifacts for a ${{ github.job }} job
         uses: actions/upload-artifact@v2
-        <<: *upload_with
+        with:
+          name: ${{github.job}}_artifact
+          path: tarball.tar
 
   build_windows:
     name: Build on Windows
-    runs-on: &windows windows-2019
+    runs-on: windows-2019
     steps:
       - uses: actions/checkout@v2
 
-      - name: Conan install
-        run: *conan_install
-
-      - name: Conan profile detect
-        run: *conan_detect
-
-      - name: Conan apply os-specific settings
-        run: conan profile update settings.compiler.runtime=MD default
-
-      - name: Conan install dependencies
-        run: *conan_install
+      - name: Conan install and usage
+        run: |
+          pip3 install conan
+          conan profile new default --detect
+          conan profile update settings.compiler.runtime=MD default
+          conan install ${{github.workspace}}/conan/conanfile.txt --install-folder=${{github.workspace}}/deps --build=missing
 
       - name: Configure CMake
-        run: *configure
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
       - name: Build
-        run: *build
-
-      - name: Tar files
-        run: *tar
+        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
       - name: Upload artifacts for a ${{ github.job }} job
         uses: actions/upload-artifact@v2
-        <<: *upload_with
+        with:
+          name: ${{github.job}}_artifact
+          path: ${{github.workspace}}/build
 
   test_linux:
     name: Test on linux
-    runs-on: *ubuntu
+    runs-on: ubuntu-20.04
     needs: build_linux
     steps:
       - name: Download artifacts for a ${{ github.job }} job
@@ -116,12 +106,12 @@ jobs:
           path: ./build
 
       - name: Untar files
-        working-directory: &build_directory ${{github.workspace}}/build
-        run: &untar tar -xvf tarball.tar
+        working-directory: ${{github.workspace}}/build
+        run: tar -xvf tarball.tar
 
       - name: Test
-        working-directory: *build_directory
-        run: &ctest ctest -C ${{env.BUILD_TYPE}}
+        working-directory: ${{github.workspace}}/build
+        run: ctest -C ${{env.BUILD_TYPE}}
 
   test_macos:
     name: Test on macOS
@@ -135,12 +125,12 @@ jobs:
           path: ./build
 
       - name: Untar files
-        working-directory: *build_directory
-        run: *untar
+        working-directory: ${{github.workspace}}/build
+        run: tar -xvf tarball.tar
 
       - name: Test
-        working-directory: *build_directory
-        run: *ctest
+        working-directory: ${{github.workspace}}/build
+        run: ctest -C ${{env.BUILD_TYPE}}
 
   test_windows:
     name: Test on windows
@@ -152,7 +142,6 @@ jobs:
         with:
           name: build_windows_artifact
           path: ./build
-
       - name: Test
-        working-directory: *build_directory
-        run: *ctest
+        working-directory: ${{github.workspace}}/build
+        run: ctest -C ${{env.BUILD_TYPE}}
