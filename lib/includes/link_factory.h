@@ -31,10 +31,7 @@ public:
     int errorCode() const override;
 
 private:
-    //    int m_errorCode;
     boost::system::error_code m_errorCode;
-
-public:
 };
 } // namespace loodsman
 #endif //LINK_FACTORY_H

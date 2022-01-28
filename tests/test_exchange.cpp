@@ -8,12 +8,31 @@ using std::string;
 using std::unique_ptr;
 using namespace loodsman;
 
+namespace
+{
+string makeMaxString()
+{
+    string data{};
+    while (data.size() < LOODSMAN_MAX_PACKET_LENGTH)
+    {
+        data.append("K");
+    }
+    return data;
+}
+
+constexpr char test_message[] = "Test message";
+
+} // namespace
+
 class intergationTests : public ::testing::Test
 {
 protected:
     LinkFactory factory;
+    string maxString;
 
-    intergationTests() = default;
+    intergationTests() : maxString(::makeMaxString())
+    {
+    }
 
     ~intergationTests() override = default;
 
@@ -72,16 +91,7 @@ TEST_F(intergationTests, SyncExchangeTest)
     unique_ptr<ILink> linkListen(factory.create(LinkType::udp, 5000));
     ASSERT_NE(linkListen, nullptr);
 
-    // ------------------------------------
-
-    string dataToSend{};
-
-    for (int i = 0; i < LOODSMAN_MAX_PACKET_LENGTH; i++)
-    {
-        dataToSend.append("K");
-    }
-
-    // ------------------------------------
+    string dataToSend = maxString;
 
     std::size_t sent_data_size = linkSender->send(dataToSend);
 
@@ -92,6 +102,7 @@ TEST_F(intergationTests, SyncExchangeTest)
 
     EXPECT_EQ(linkListen->errorCode(), boost::system::errc::errc_t::success);
     EXPECT_EQ(received_data.size(), LOODSMAN_MAX_PACKET_LENGTH);
+    EXPECT_EQ(received_data, dataToSend);
 
     dataToSend = "Test message";
     sent_data_size = linkListen->send(dataToSend);
@@ -103,6 +114,7 @@ TEST_F(intergationTests, SyncExchangeTest)
 
     EXPECT_EQ(linkSender->errorCode(), boost::system::errc::errc_t::success);
     EXPECT_EQ(received_data.size(), dataToSend.size());
+    EXPECT_EQ(received_data, dataToSend);
 }
 
 TEST_F(intergationTests, AsyncExchangeTest)
@@ -114,16 +126,7 @@ TEST_F(intergationTests, AsyncExchangeTest)
     unique_ptr<LinkAsync> linkListen(factory.create(LinkType::udp, 5000));
     ASSERT_NE(linkListen, nullptr);
 
-    // ------------------------------------
-
-    string dataToSend{};
-
-    for (int i = 0; i < LOODSMAN_MAX_PACKET_LENGTH; i++)
-    {
-        dataToSend.append("K");
-    }
-
-    // ------------------------------------
+    string dataToSend = maxString;
 
     auto counter_ptr = std::make_shared<int>(0);
 
@@ -167,16 +170,7 @@ TEST_F(intergationTests, AsyncExchangeRunTest)
     unique_ptr<LinkAsync> linkListen(factory.create(LinkType::udp, 5000));
     ASSERT_NE(linkListen, nullptr);
 
-    // ------------------------------------
-
-    string dataToSend{};
-
-    for (int i = 0; i < LOODSMAN_MAX_PACKET_LENGTH; i++)
-    {
-        dataToSend.append("Z");
-    }
-
-    // ------------------------------------
+    string dataToSend = maxString;
 
     auto counter_ptr = std::make_shared<int>(0);
 
