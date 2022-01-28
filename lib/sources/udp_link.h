@@ -13,17 +13,11 @@ namespace loodsman
 class UdpLink final : public LinkAsync
 {
 public:
-    explicit UdpLink(int localPort, const std::string& localAddress = "0.0.0.0", int remotePort = 0,
-                     const std::string& remoteAddress = "0.0.0.0");
+    explicit UdpLink(unsigned int localPort, const std::string& localAddress = "0.0.0.0",
+                     unsigned int remotePort = 0, const std::string& remoteAddress = "0.0.0.0");
 
-    int open() override;
-    int close() override;
-
-    std::string localAddress() const;
-    int localPort() const;
-
-    std::string remoteAddress() const;
-    int remotePort() const;
+    std::error_code open() override;
+    void close() override;
 
     std::string errorMessage() const override;
     int errorCode() const override;
@@ -43,11 +37,18 @@ public:
                                         const SendHandler& handler);
 
 private:
-    int bind(int port);
-    int connect(const std::string& remoteAddress, int remotePort);
+    std::error_code bind();
+    std::error_code connect();
+
+    [[maybe_unused]] std::string localAddress() const;
+    [[maybe_unused]] int localPort() const;
+
+    [[maybe_unused]] std::string remoteAddress() const;
+    [[maybe_unused]] int remotePort() const;
 
     boost::asio::ip::udp::endpoint m_remoteEndpoint;
-    char m_buffer[MAX_PACKET_LENGTH];
+    boost::asio::ip::udp::endpoint m_localEndpoint;
+    char m_buffer[LOODSMAN_MAX_PACKET_LENGTH] = {};
     boost::asio::ip::udp::socket m_socket;
     boost::system::error_code m_errorCode;
 };

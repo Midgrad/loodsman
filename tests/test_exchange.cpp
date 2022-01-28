@@ -1,181 +1,336 @@
-#include "link_factory.h"
 #include <gtest/gtest.h>
-#include <iostream>
+#include <memory>
+#include <string_view>
 
-using std::cout;
-using std::endl;
+#include "link_factory.h"
+
 using std::string;
+using std::unique_ptr;
 using namespace loodsman;
 
-TEST(intergationTests, SenderConstructorTest)
+namespace
 {
-    LinkFactory factory;
-    LinkAsync* linkSender = factory.create(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1");
-
-    int result = factory.errorCode();
-
-    EXPECT_EQ(result, 0);
-    ASSERT_NE(linkSender, nullptr);
-
-    delete linkSender;
-}
-
-TEST(intergationTests, ReceiveConstructorTest)
+string makeMaxString()
 {
-    LinkFactory factory;
-    ILink* linkListen = factory.create(LinkType::udp, 5000);
-
-    int result = factory.errorCode();
-
-    EXPECT_EQ(result, 0);
-    ASSERT_NE(linkListen, nullptr);
-
-    delete linkListen;
-}
-
-TEST(intergationTests, SyncExchangeTest)
-{
-    LinkFactory factory;
-    LinkAsync* linkSender = factory.create(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1");
-
-    int result = factory.errorCode();
-
-    EXPECT_EQ(result, 0);
-    ASSERT_NE(linkSender, nullptr);
-
-    LinkFactory factoryListen;
-    ILink* linkListen = factoryListen.create(LinkType::udp, 5000);
-
-    result = factoryListen.errorCode();
-
-    EXPECT_EQ(result, 0);
-    ASSERT_NE(linkListen, nullptr);
-
-    // ------------------------------------
-
-    string dataToSend{};
-
-    for (int i = 0; i < (MAX_PACKET_LENGTH); i++)
+    string data{};
+    while (data.size() < LOODSMAN_MAX_PACKET_LENGTH)
     {
-        dataToSend.append("K");
+        data.append("K");
+    }
+    return data;
+}
+
+const string maxString = ::makeMaxString();
+constexpr char testMessage[] = "Test message";
+} // namespace
+
+class IntergationTests : public ::testing::Test
+{
+protected:
+    IntergationTests() = default;
+    ~IntergationTests() override = default;
+
+    LinkFactory m_linkFactory;
+
+    void SetUp() override
+    {
+        // A placeholder for a future usage
     }
 
-    // ------------------------------------
+    void TearDown() override
+    {
+        // A placeholder for a future usage
+    }
+};
 
-    cout << "Sending... " << endl;
-    std::size_t sent_data_size = linkSender->send(dataToSend);
-    cout << "Sent bytes: " << sent_data_size << endl;
-    cout << "Error messages: " << linkSender->errorMessage() << endl;
-
-    EXPECT_EQ(linkSender->errorCode(), 0);
-    EXPECT_EQ(sent_data_size, MAX_PACKET_LENGTH);
-
-    cout << "Listening..." << endl;
-    ;
-    string received_data(linkListen->receive());
-    cout << "Error messages: " << linkListen->errorMessage() << endl;
-
-    EXPECT_EQ(linkListen->errorCode(), 0);
-    EXPECT_EQ(received_data.size(), MAX_PACKET_LENGTH);
-
-    dataToSend = "Test message";
-    cout << "Sending..." << endl;
-    sent_data_size = linkListen->send(dataToSend);
-    cout << "Sent bytes: " << sent_data_size << endl;
-    cout << "Error messages: " << linkListen->errorMessage() << endl;
-
-    EXPECT_EQ(linkListen->errorCode(), 0);
-    EXPECT_EQ(sent_data_size, dataToSend.size());
-
-    cout << "Listening" << endl;
-    ;
-    received_data = string(linkSender->receive());
-
-    EXPECT_EQ(linkSender->errorCode(), 0);
-    EXPECT_EQ(received_data.size(), dataToSend.size());
-
-    delete linkListen;
-    delete linkSender;
+TEST_F(IntergationTests, SenderConstructorTest)
+{
+    unique_ptr<ILink> linkSender(
+        m_linkFactory.create(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1"));
+    ASSERT_NE(linkSender, nullptr);
+    EXPECT_EQ(linkSender->errorCode(), boost::system::errc::errc_t::success);
+    EXPECT_NE(linkSender->errorMessage(), "");
+    EXPECT_EQ(m_linkFactory.errorCode(), boost::system::errc::errc_t::success);
 }
 
-void sendHandler(std::size_t bytesTransferred)
+TEST_F(IntergationTests, ReceiveConstructorUdpTest)
 {
-    cout << "Send handler:Sent bytes: " << bytesTransferred << endl;
-    EXPECT_NE(bytesTransferred, 0);
+    unique_ptr<ILink> linkListen(m_linkFactory.create(LinkType::udp, 5000));
+    ASSERT_NE(linkListen, nullptr);
+    EXPECT_EQ(linkListen->errorCode(), boost::system::errc::errc_t::success);
+    EXPECT_EQ(m_linkFactory.errorCode(), boost::system::errc::errc_t::success);
 }
 
-void receiveHandler(const std::string& data)
+TEST_F(IntergationTests, ReceiveConstructorTcpTest)
 {
-    cout << "Receive handler:Received data: " << data << endl;
-    EXPECT_NE(data.size(), 0);
+    unique_ptr<ILink> linkListen(m_linkFactory.create(LinkType::tcp, 5000));
+    ASSERT_EQ(linkListen, nullptr);
+    EXPECT_EQ(m_linkFactory.errorCode(), boost::system::errc::not_supported);
+    EXPECT_NE(m_linkFactory.errorMessage(), "");
 }
 
-TEST(intergationTests, AsyncExchangeTest)
+TEST_F(IntergationTests, ReceiveConstructorUnknownTypeTest)
 {
-    LinkFactory factory;
-    LinkAsync* linkSender = factory.create(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1");
+    unique_ptr<ILink> linkListen(m_linkFactory.create(static_cast<LinkType>(23), 5000));
+    EXPECT_EQ(m_linkFactory.errorCode(), boost::system::errc::not_supported);
+    EXPECT_NE(m_linkFactory.errorMessage(), "");
+    ASSERT_EQ(linkListen, nullptr);
+}
 
-    int result = factory.errorCode();
+TEST_F(IntergationTests, ReceiveConstructorBusyPortTest)
+{
+    unique_ptr<ILink> linkListen(m_linkFactory.create(LinkType::udp, 5000));
+    ASSERT_NE(linkListen, nullptr);
+    EXPECT_EQ(m_linkFactory.errorCode(), boost::system::errc::errc_t::success);
+    EXPECT_EQ(linkListen->errorCode(), boost::system::errc::errc_t::success);
 
-    EXPECT_EQ(result, 0);
+    unique_ptr<ILink> linkListenSamePort(m_linkFactory.create(LinkType::udp, 5000));
+    ASSERT_EQ(linkListenSamePort, nullptr);
+    EXPECT_NE(m_linkFactory.errorMessage(), "");
+#ifdef _WIN32
+    EXPECT_EQ(m_linkFactory.errorCode(), WSAEADDRINUSE);
+#else
+    EXPECT_EQ(m_linkFactory.errorCode(), boost::system::errc::errc_t::address_in_use);
+#endif
+}
+
+TEST_F(IntergationTests, SenderConstructorNegativePortsTest)
+{
+    unique_ptr<ILink> link1(m_linkFactory.create(LinkType::udp, -1, "0.0.0.0", 5000, "127.0.0.1"));
+    ASSERT_EQ(link1, nullptr);
+    EXPECT_EQ(m_linkFactory.errorCode(), boost::system::errc::invalid_argument);
+    EXPECT_NE(m_linkFactory.errorMessage(), "");
+
+    unique_ptr<ILink> link2(m_linkFactory.create(LinkType::udp, 5000, "0.0.0.0", -1, "127.0.0.1"));
+    ASSERT_EQ(link2, nullptr);
+    EXPECT_EQ(m_linkFactory.errorCode(), boost::system::errc::invalid_argument);
+    EXPECT_NE(m_linkFactory.errorMessage(), "");
+}
+
+TEST_F(IntergationTests, SenderConstructorInvalidAdressesTest)
+{
+    unique_ptr<ILink> link1(m_linkFactory.create(LinkType::udp, 5000, "junk", 5001, "127.0.0.1"));
+    ASSERT_EQ(link1, nullptr);
+    EXPECT_NE(m_linkFactory.errorMessage(), "");
+#ifdef _WIN32
+    EXPECT_EQ(m_linkFactory.errorCode(), WSAEINVAL);
+#else
+    EXPECT_EQ(m_linkFactory.errorCode(), boost::system::errc::invalid_argument);
+#endif
+
+    unique_ptr<ILink> link2(m_linkFactory.create(LinkType::udp, 5000, "0.0.0.0", 5001, "garbage"));
+    ASSERT_EQ(link2, nullptr);
+    EXPECT_NE(m_linkFactory.errorMessage(), "");
+#ifdef _WIN32
+    EXPECT_EQ(m_linkFactory.errorCode(), WSAEINVAL);
+#else
+    EXPECT_EQ(m_linkFactory.errorCode(), boost::system::errc::invalid_argument);
+#endif
+}
+
+TEST_F(IntergationTests, SenderConstructorBindSamePortTest)
+{
+    unique_ptr<ILink> link1(m_linkFactory.create(LinkType::udp, 5000, "0.0.0.0", 5001, "127.0.0.1"));
+    ASSERT_NE(link1, nullptr);
+    EXPECT_EQ(link1->errorCode(), boost::system::errc::errc_t::success);
+    EXPECT_EQ(m_linkFactory.errorCode(), boost::system::errc::errc_t::success);
+
+    link1->close();
+
+    unique_ptr<ILink> link2(m_linkFactory.create(LinkType::udp, 5000, "0.0.0.0", 5001, "127.0.0.1"));
+    ASSERT_NE(link2, nullptr);
+    EXPECT_EQ(link2->errorCode(), boost::system::errc::errc_t::success);
+    EXPECT_EQ(m_linkFactory.errorCode(), boost::system::errc::errc_t::success);
+
+#ifdef _WIN32
+    EXPECT_EQ(link1->open().value(), WSAEADDRINUSE);
+#else
+    EXPECT_EQ(link1->open().value(), boost::system::errc::errc_t::address_in_use);
+#endif
+}
+
+TEST_F(IntergationTests, SyncExchangeTest)
+{
+    unique_ptr<ILink> linkSender(
+        m_linkFactory.create(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1"));
     ASSERT_NE(linkSender, nullptr);
 
-    LinkAsync* linkListen = factory.create(LinkType::udp, 5000);
-
-    result = factory.errorCode();
-
-    EXPECT_EQ(result, 0);
+    unique_ptr<ILink> linkListen(m_linkFactory.create(LinkType::udp, 5000));
     ASSERT_NE(linkListen, nullptr);
 
-    // ------------------------------------
+    string dataToSend = maxString;
 
-    string dataToSend{};
+    std::size_t sentDataSize = linkSender->send(dataToSend);
 
-    for (int i = 0; i < (MAX_PACKET_LENGTH); i++)
-    {
-        dataToSend.append("K");
-    }
+    EXPECT_EQ(linkSender->errorCode(), boost::system::errc::errc_t::success);
+    EXPECT_EQ(sentDataSize, LOODSMAN_MAX_PACKET_LENGTH);
 
-    // ------------------------------------
+    string receivedData(linkListen->receive());
 
-    cout << "Sending... " << endl;
-    linkSender->asyncSend(dataToSend, sendHandler);
+    EXPECT_EQ(linkListen->errorCode(), boost::system::errc::errc_t::success);
+    EXPECT_EQ(receivedData.size(), LOODSMAN_MAX_PACKET_LENGTH);
+    EXPECT_EQ(receivedData, dataToSend);
 
-    //    cout << "Error messages: " << linkSender->errorMessage() << endl;
+    dataToSend = testMessage;
+    sentDataSize = linkListen->send(dataToSend);
 
-    //    EXPECT_EQ(linkSender->errorCode(), 0);
+    EXPECT_EQ(linkListen->errorCode(), boost::system::errc::errc_t::success);
+    EXPECT_EQ(sentDataSize, dataToSend.size());
 
-    cout << "Listening..." << endl;
-    ;
-    linkListen->asyncReceive(receiveHandler);
+    receivedData = string(linkSender->receive());
 
-    cout << "This message should be displayed before " << endl;
+    EXPECT_EQ(linkSender->errorCode(), boost::system::errc::errc_t::success);
+    EXPECT_EQ(receivedData.size(), dataToSend.size());
+    EXPECT_EQ(receivedData, dataToSend);
+}
 
-//    factory.checkHandlers();
+TEST_F(IntergationTests, AsyncExchangeTest)
+{
+    unique_ptr<LinkAsync> linkSender(
+        m_linkFactory.create(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1"));
+    ASSERT_NE(linkSender, nullptr);
+
+    unique_ptr<LinkAsync> linkListen(m_linkFactory.create(LinkType::udp, 5000));
+    ASSERT_NE(linkListen, nullptr);
+
+    string dataToSend = maxString;
+
+    auto counterPtr = std::make_shared<int>(0);
+
+    linkSender->asyncSend(dataToSend,
+                          [dataToSend, counterPtr](std::size_t bytesTransferred) mutable {
+                              EXPECT_EQ(bytesTransferred, dataToSend.size());
+                              (*counterPtr)++;
+                          });
+    linkListen->asyncReceive([dataToSend, counterPtr](std::string_view dataReceived) mutable {
+        EXPECT_EQ(dataToSend, dataReceived);
+        (*counterPtr)++;
+    });
+
     linkListen->checkHandlers();
     linkSender->checkHandlers();
 
+    dataToSend = testMessage;
 
-    //    cout << "Error messages: " << linkListen->errorMessage() << endl;
-    //    EXPECT_EQ(linkListen->errorCode(), 0);
-
-    dataToSend = "Test message";
-    cout << "Sending..." << endl;
-
-    linkListen->asyncSend(dataToSend, sendHandler);
-
-    //    cout << "Error messages: " << linkListen->errorMessage() << endl;
-    //
-    //    EXPECT_EQ(linkListen->errorCode(), 0);
-
-    //
-    cout << "Listening" << endl;
-
-    linkSender->asyncReceive(receiveHandler);
+    linkSender->asyncSend(dataToSend,
+                          [dataToSend, counterPtr](std::size_t bytesTransferred) mutable {
+                              EXPECT_EQ(bytesTransferred, dataToSend.size());
+                              (*counterPtr)++;
+                          });
+    linkListen->asyncReceive([dataToSend, counterPtr](std::string_view dataReceived) mutable {
+        EXPECT_EQ(dataToSend, dataReceived);
+        (*counterPtr)++;
+    });
 
     linkListen->checkHandlers();
     linkSender->checkHandlers();
 
-    //    delete linkListen;
-    //    delete linkSender;
+    EXPECT_EQ(*counterPtr, 4);
+}
+
+TEST_F(IntergationTests, AsyncExchangeRunTest)
+{
+    unique_ptr<LinkAsync> linkSender(
+        m_linkFactory.create(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1"));
+    ASSERT_NE(linkSender, nullptr);
+
+    unique_ptr<LinkAsync> linkListen(m_linkFactory.create(LinkType::udp, 5000));
+    ASSERT_NE(linkListen, nullptr);
+
+    string dataToSend = maxString;
+
+    auto counterPtr = std::make_shared<int>(0);
+
+    linkSender->asyncSend(dataToSend,
+                          [dataToSend, counterPtr](std::size_t bytesTransferred) mutable {
+                              EXPECT_EQ(bytesTransferred, dataToSend.size());
+                              (*counterPtr)++;
+                          });
+    linkListen->asyncReceive([dataToSend, counterPtr](std::string_view dataReceived) mutable {
+        EXPECT_EQ(dataToSend, dataReceived);
+        (*counterPtr)++;
+    });
+
+    linkListen->runHandlers();
+    linkSender->runHandlers();
+
+    EXPECT_EQ(*counterPtr, 2);
+}
+
+TEST_F(IntergationTests, AsyncExchangeCloseOpenTest)
+{
+    unique_ptr<LinkAsync> linkSender(
+        m_linkFactory.create(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1"));
+    ASSERT_NE(linkSender, nullptr);
+
+    unique_ptr<LinkAsync> linkListen(m_linkFactory.create(LinkType::udp, 5000));
+    ASSERT_NE(linkListen, nullptr);
+
+    linkListen->close();
+
+    string dataToSend = maxString;
+
+    auto counterPtr = std::make_shared<int>(0);
+
+    linkSender->asyncSend(dataToSend,
+                          [dataToSend, counterPtr](std::size_t bytesTransferred) mutable {
+                              EXPECT_EQ(bytesTransferred, dataToSend.size());
+                              (*counterPtr)++;
+                          });
+
+    linkListen->asyncReceive([dataToSend, counterPtr](std::string_view dataReceived) mutable {
+        EXPECT_EQ("", dataReceived);
+        (*counterPtr)++;
+    });
+
+    linkListen->checkHandlers();
+    linkSender->checkHandlers();
+
+    EXPECT_EQ(linkListen->open().value(), 0);
+
+    linkSender->asyncSend(dataToSend,
+                          [dataToSend, counterPtr](std::size_t bytesTransferred) mutable {
+                              EXPECT_EQ(bytesTransferred, dataToSend.size());
+                              (*counterPtr)++;
+                          });
+
+    linkListen->asyncReceive([dataToSend, counterPtr](std::string_view dataReceived) mutable {
+        EXPECT_EQ(dataToSend, dataReceived);
+        (*counterPtr)++;
+    });
+
+    linkListen->checkHandlers();
+    linkSender->checkHandlers();
+
+    EXPECT_EQ(*counterPtr, 4);
+}
+
+TEST_F(IntergationTests, AsyncExchangeTruncateTest)
+{
+    unique_ptr<LinkAsync> linkSender(
+        m_linkFactory.create(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1"));
+    ASSERT_NE(linkSender, nullptr);
+
+    unique_ptr<LinkAsync> linkListen(m_linkFactory.create(LinkType::udp, 5000));
+    ASSERT_NE(linkListen, nullptr);
+
+    string dataToSend = maxString + testMessage;
+
+    auto counterPtr = std::make_shared<int>(0);
+
+    linkSender->asyncSend(dataToSend,
+                          [dataToSend, counterPtr](std::size_t bytesTransferred) mutable {
+                              EXPECT_EQ(bytesTransferred, dataToSend.size());
+                              (*counterPtr)++;
+                          });
+
+    linkListen->asyncReceive([dataToSend, counterPtr](std::string_view dataReceived) mutable {
+        EXPECT_NE(dataToSend, dataReceived);
+        (*counterPtr)++;
+    });
+
+    linkListen->checkHandlers();
+    linkSender->checkHandlers();
+
+    EXPECT_EQ(*counterPtr, 2);
 }

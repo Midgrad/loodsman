@@ -1,22 +1,25 @@
 #include "link_factory.h"
 
-#include "i_link.h"
 #include "udp_link.h"
 #include "utils.h"
 
-#include <iostream>
+#include <boost/system/error_code.hpp>
 #include <string_view>
 
 using namespace loodsman;
 
-LinkFactory::LinkFactory() : m_errorCode(0)
-{
-}
-
-LinkAsync* LinkFactory::create(LinkType type, int localPort, const std::string& localAddress,
-                               int remotePort, const std::string& remoteAddress)
+LinkAsync* LinkFactory::create(const LinkType type, const int localPort,
+                               const std::string& localAddress, const int remotePort,
+                               const std::string& remoteAddress) noexcept
 {
     LinkAsync* link = nullptr;
+
+    if ((localPort < 0) || (remotePort < 0))
+    {
+        utils::debugPrint("LinkFactory: port number could not be negative!");
+        m_errorCode = boost::system::errc::make_error_code(boost::system::errc::invalid_argument);
+        return nullptr;
+    }
 
     try
     {
@@ -26,36 +29,35 @@ LinkAsync* LinkFactory::create(LinkType type, int localPort, const std::string& 
             link = new UdpLink(localPort, localAddress, remotePort, remoteAddress);
             break;
         case LinkType::tcp:
-            std::cout << "TCP Link type is not implemented" << std::endl;
-            // TODO: Fix magic number, sync error codes with boost::system::system_error
-            m_errorCode = 1;
-            break;
-        case LinkType::serial:
-            std::cout << "Serial Link type is not implemented" << std::endl;
-            // TODO: Fix magic number, sync error codes with boost::system::system_error
-            m_errorCode = 1;
+            utils::debugPrint("TCP Link type is not implemented");
+            m_errorCode = boost::system::errc::make_error_code(boost::system::errc::not_supported);
             break;
         default:
-            m_errorCode = 2;
-            std::cout << "Unknown link type" << std::endl;
+            m_errorCode = boost::system::errc::make_error_code(boost::system::errc::not_supported);
+            utils::debugPrint("Unknown link type");
         }
     }
     catch (const boost::system::system_error& error)
     {
-        debugPrint("boost system error");
-        m_errorCode = error.code().value();
-        std::cout << error.code().message();
+        utils::debugPrint("boost system error");
+        m_errorCode = error.code();
+        utils::debugPrint(error.code().message());
     }
     catch (...)
     {
-        debugPrint("Generic error");
-        m_errorCode = 1;
+        utils::debugPrint("Generic error");
+        m_errorCode = boost::system::errc::make_error_code(boost::system::errc::not_supported);
     }
 
     return link;
 }
 
+std::string LinkFactory::errorMessage() const
+{
+    return m_errorCode.message();
+}
+
 int LinkFactory::errorCode() const
 {
-    return m_errorCode;
+    return m_errorCode.value();
 }

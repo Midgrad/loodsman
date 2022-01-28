@@ -10,8 +10,9 @@ class ILinkFactory
 public:
     virtual ~ILinkFactory() = default;
 
-//    virtual ILink* create() = 0;
+    // TODO: consider purpose of this header and implementing   virtual ILink* create() = 0;
 
+    virtual std::string errorMessage() const = 0;
     virtual int errorCode() const = 0;
 };
 } // namespace loodsman

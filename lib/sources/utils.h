@@ -2,20 +2,16 @@
 #define UTILS_H
 
 #include <iostream>
+#include <string_view>
 
-#include <functional>
-
-#include <boost/asio.hpp>
-
-//TODO: parametrize in cmake and split into several files
-namespace
+namespace utils
 {
-void debugPrint(std::string_view message)
+inline void debugPrint(std::string_view message)
 {
-    if (DEBUG_VERBOSITY)
-        std::cout << message << std::endl;
+#ifdef VERBOSE_OUTPUT
+    std::cout << message << std::endl;
+#endif
 }
-
-} // namespace
+} // namespace utils
 
 #endif //UTILS_H
