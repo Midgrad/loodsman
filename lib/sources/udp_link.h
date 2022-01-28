@@ -16,8 +16,8 @@ public:
     explicit UdpLink(unsigned int localPort, const std::string& localAddress = "0.0.0.0",
                      unsigned int remotePort = 0, const std::string& remoteAddress = "0.0.0.0");
 
-    int open() override;
-    int close() override;
+    std::error_code open() override;
+    void close() override;
 
     std::string errorMessage() const override;
     int errorCode() const override;
@@ -37,8 +37,8 @@ public:
                                         const SendHandler& handler);
 
 private:
-    int bind();
-    int connect();
+    std::error_code bind();
+    std::error_code connect();
 
     [[maybe_unused]] std::string localAddress() const;
     [[maybe_unused]] int localPort() const;

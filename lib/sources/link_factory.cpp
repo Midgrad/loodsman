@@ -32,10 +32,6 @@ LinkAsync* LinkFactory::create(const LinkType type, const int localPort,
             utils::debugPrint("TCP Link type is not implemented");
             m_errorCode = boost::system::errc::make_error_code(boost::system::errc::not_supported);
             break;
-        case LinkType::serial:
-            utils::debugPrint("Serial Link type is not implemented");
-            m_errorCode = boost::system::errc::make_error_code(boost::system::errc::not_supported);
-            break;
         default:
             m_errorCode = boost::system::errc::make_error_code(boost::system::errc::not_supported);
             utils::debugPrint("Unknown link type");

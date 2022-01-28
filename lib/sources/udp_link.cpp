@@ -21,43 +21,44 @@ UdpLink::UdpLink(unsigned int localPort, const string& localAddress, unsigned in
 {
 }
 
-int UdpLink::open()
+std::error_code UdpLink::open()
 {
-    boost::system::error_code error;
-    m_socket.open(ip::udp::v4(), error);
-    this->bind();
-    if (error.value())
-        utils::debugPrint(error.message());
-    return error.value();
+    m_socket.open(ip::udp::v4(), m_errorCode);
+    if (m_errorCode.value())
+    {
+        utils::debugPrint(m_errorCode.message());
+    }
+
+    m_errorCode = this->bind();
+    if (m_errorCode.value())
+    {
+        utils::debugPrint(m_errorCode.message());
+    }
+
+    return static_cast<std::error_code>(m_errorCode);
 }
 
-int UdpLink::close()
+void UdpLink::close()
 {
-    boost::system::error_code error;
     m_socket.close();
-    if (error.value())
-        utils::debugPrint(error.message());
-    return error.value();
 }
 
-int UdpLink::bind()
+std::error_code UdpLink::bind()
 {
-    boost::system::error_code error;
-    m_socket.bind(m_localEndpoint, error);
-    if (error.value())
-        utils::debugPrint(error.message());
-    return error.value();
+    m_errorCode = m_socket.bind(m_localEndpoint, m_errorCode);
+    if (m_errorCode.value())
+        utils::debugPrint(m_errorCode.message());
+    return static_cast<std::error_code>(m_errorCode);
 }
 
 // Presumably used to permanently bind socket to a remote address, and prevent changes.
 // may be helpful if we would use immutable objects
-int UdpLink::connect()
+std::error_code UdpLink::connect()
 {
-    boost::system::error_code error;
-    m_socket.connect(m_remoteEndpoint, error);
-    if (error.value())
-        utils::debugPrint(error.message());
-    return error.value();
+    m_errorCode = m_socket.connect(m_remoteEndpoint, m_errorCode);
+    if (m_errorCode.value())
+        utils::debugPrint(m_errorCode.message());
+    return static_cast<std::error_code>(m_errorCode);
 }
 
 [[maybe_unused]] string UdpLink::localAddress() const
@@ -85,7 +86,7 @@ int UdpLink::errorCode() const
     return m_remoteEndpoint.address().to_string();
 }
 
-int UdpLink::remotePort() const
+[[maybe_unused]] int UdpLink::remotePort() const
 {
     return m_remoteEndpoint.port();
 }
