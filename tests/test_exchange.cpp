@@ -142,8 +142,6 @@ TEST_F(IntergationTests, SenderConstructorBindSamePortTest)
     EXPECT_EQ(link2->errorCode(), boost::system::errc::errc_t::success);
     EXPECT_EQ(m_linkFactory.errorCode(), boost::system::errc::errc_t::success);
 
-    //    EXPECT_EQ(link1->open().value(), boost::system::errc::address_in_use);
-
 #ifdef _WIN32
     EXPECT_EQ(link1->open().value(), WSAEADDRINUSE);
 #else
