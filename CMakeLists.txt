@@ -6,7 +6,12 @@ if(NOT DEFINED CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD 17)
 endif()
 
-add_compile_options(-fPIC)
+if(CMAKE_HOST_WIN32)
+    add_compile_definitions(_WIN32_WINNT=0x0601)
+else(CMAKE_HOST_WIN32)
+    add_compile_options(-fPIC)
+endif(CMAKE_HOST_WIN32)
+
 
 # Project
 project(loodsman VERSION 0.6.1

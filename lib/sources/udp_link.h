@@ -43,11 +43,12 @@ public:
                                         const SendHandler& handler);
 
 private:
-    int bind(int port);
-    int connect(const std::string& remoteAddress, int remotePort);
+    int bind();
+    int connect();
 
     boost::asio::ip::udp::endpoint m_remoteEndpoint;
-    char m_buffer[LOODSMAN_MAX_PACKET_LENGTH];
+    boost::asio::ip::udp::endpoint m_localEndpoint;
+    char m_buffer[LOODSMAN_MAX_PACKET_LENGTH] = {};
     boost::asio::ip::udp::socket m_socket;
     boost::system::error_code m_errorCode;
 };

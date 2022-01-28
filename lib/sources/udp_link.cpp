@@ -12,9 +12,9 @@ using namespace std::placeholders;
 
 UdpLink::UdpLink(int localPort, const string& localAddress, int remotePort,
                  const string& remoteAddress) :
-    m_socket(m_ioContext, ip::udp::endpoint(ip::make_address(localAddress), localPort)),
-    m_buffer{},
-    m_remoteEndpoint(ip::udp::endpoint(ip::make_address(remoteAddress), remotePort))
+    m_remoteEndpoint(ip::udp::endpoint(ip::make_address(remoteAddress), remotePort)),
+    m_localEndpoint(ip::udp::endpoint(ip::make_address(localAddress), localPort)),
+    m_socket(m_ioContext, ip::udp::endpoint(ip::make_address(localAddress), localPort))
 {
 }
 
@@ -22,6 +22,7 @@ int UdpLink::open()
 {
     boost::system::error_code error;
     m_socket.open(ip::udp::v4(), error);
+    this->bind();
     if (error.value())
         utils::debugPrint(error.message());
     return error.value();
@@ -36,10 +37,10 @@ int UdpLink::close()
     return error.value();
 }
 
-int UdpLink::bind(int port)
+int UdpLink::bind()
 {
     boost::system::error_code error;
-    m_socket.bind(ip::udp::endpoint(ip::udp::v4(), port), error);
+    m_socket.bind(m_localEndpoint, error);
     if (error.value())
         utils::debugPrint(error.message());
     return error.value();
@@ -47,10 +48,10 @@ int UdpLink::bind(int port)
 
 // Presumably used to permanently bind socket to a remote address, and prevent changes.
 // may be helpful if we would use immutable objects
-int UdpLink::connect(const string& remoteAddress, int remotePort)
+int UdpLink::connect()
 {
     boost::system::error_code error;
-    m_socket.connect(ip::udp::endpoint(ip::make_address(remoteAddress), remotePort), error);
+    m_socket.connect(m_remoteEndpoint, error);
     if (error.value())
         utils::debugPrint(error.message());
     return error.value();
@@ -58,12 +59,12 @@ int UdpLink::connect(const string& remoteAddress, int remotePort)
 
 string UdpLink::localAddress() const
 {
-    return m_socket.local_endpoint().address().to_string();
+    return m_localEndpoint.address().to_string();
 }
 
 int UdpLink::localPort() const
 {
-    return m_socket.local_endpoint().port();
+    return m_localEndpoint.port();
 }
 
 string UdpLink::errorMessage() const
