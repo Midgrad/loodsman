@@ -49,6 +49,7 @@ TEST_F(IntergationTests, SenderConstructorTest)
         m_linkFactory.create(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1"));
     ASSERT_NE(linkSender, nullptr);
     EXPECT_EQ(linkSender->errorCode(), boost::system::errc::errc_t::success);
+    EXPECT_NE(linkSender->errorMessage(), "");
     EXPECT_EQ(m_linkFactory.errorCode(), boost::system::errc::errc_t::success);
 }
 
