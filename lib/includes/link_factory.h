@@ -20,12 +20,13 @@ enum class LinkType
 class LinkFactory : public ILinkFactory
 {
 public:
-    LinkFactory();
+    LinkFactory() = default;
 
-    LinkAsync* create(LinkType type, int localPort, const std::string& localAddress = "0.0.0.0",
-                      int remotePort = 0, const std::string& remoteAddress = "0.0.0.0");
+    LinkAsync* create(const LinkType type, const int localPort,
+                      const std::string& localAddress = "0.0.0.0", const int remotePort = 0,
+                      const std::string& remoteAddress = "0.0.0.0") noexcept;
 
-    //    LinkAsync* create(LinkType type ,int baudRate);
+    // TODO: Implement serial type    LinkAsync* create(LinkType type ,int baudRate);
 
     std::string errorMessage() const override;
     int errorCode() const override;

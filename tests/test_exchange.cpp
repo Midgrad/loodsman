@@ -60,7 +60,7 @@ TEST_F(IntergationTests, ReceiveConstructorUdpTest)
     EXPECT_EQ(m_linkFactory.errorCode(), boost::system::errc::errc_t::success);
 }
 
-TEST_F(IntergationTests, ReceiveConstructorUnknownTest)
+TEST_F(IntergationTests, ReceiveConstructorUnknownTypeTest)
 {
     unique_ptr<ILink> linkListen(m_linkFactory.create(static_cast<LinkType>(23), 5000));
     ASSERT_EQ(linkListen, nullptr);
@@ -80,6 +80,24 @@ TEST_F(IntergationTests, ReceiveConstructorBusyPortTest)
 #else
     EXPECT_EQ(m_linkFactory.errorCode(), boost::system::errc::errc_t::address_in_use);
 #endif
+}
+
+TEST_F(IntergationTests, SenderConstructorNegativePortsTest)
+{
+    unique_ptr<ILink> link1(m_linkFactory.create(LinkType::udp, -1, "0.0.0.0", 5000, "127.0.0.1"));
+    ASSERT_EQ(link1, nullptr);
+
+    unique_ptr<ILink> link2(m_linkFactory.create(LinkType::udp, 5000, "0.0.0.0", -1, "127.0.0.1"));
+    ASSERT_EQ(link2, nullptr);
+}
+
+TEST_F(IntergationTests, SenderConstructorInvalidAdressesTest)
+{
+    unique_ptr<ILink> link1(m_linkFactory.create(LinkType::udp, 5000, "junk", 5001, "127.0.0.1"));
+    ASSERT_EQ(link1, nullptr);
+
+    unique_ptr<ILink> link2(m_linkFactory.create(LinkType::udp, 5000, "0.0.0.0", 5001, "garbage"));
+    ASSERT_EQ(link2, nullptr);
 }
 
 TEST_F(IntergationTests, SyncExchangeTest)
@@ -236,4 +254,34 @@ TEST_F(IntergationTests, AsyncExchangeCloseOpenTest)
     linkSender->checkHandlers();
 
     EXPECT_EQ(*counterPtr, 4);
+}
+
+TEST_F(IntergationTests, AsyncExchangeTruncateTest)
+{
+    unique_ptr<LinkAsync> linkSender(
+        m_linkFactory.create(LinkType::udp, 5001, "0.0.0.0", 5000, "127.0.0.1"));
+    ASSERT_NE(linkSender, nullptr);
+
+    unique_ptr<LinkAsync> linkListen(m_linkFactory.create(LinkType::udp, 5000));
+    ASSERT_NE(linkListen, nullptr);
+
+    string dataToSend = maxString + testMessage;
+
+    auto counterPtr = std::make_shared<int>(0);
+
+    linkSender->asyncSend(dataToSend,
+                          [dataToSend, counterPtr](std::size_t bytesTransferred) mutable {
+                              EXPECT_EQ(bytesTransferred, dataToSend.size());
+                              (*counterPtr)++;
+                          });
+
+    linkListen->asyncReceive([dataToSend, counterPtr](std::string_view dataReceived) mutable {
+        EXPECT_NE(dataToSend, dataReceived);
+        (*counterPtr)++;
+    });
+
+    linkListen->checkHandlers();
+    linkSender->checkHandlers();
+
+    EXPECT_EQ(*counterPtr, 2);
 }

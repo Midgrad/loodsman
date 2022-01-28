@@ -10,11 +10,14 @@ using std::string;
 using std::string_view;
 using namespace std::placeholders;
 
-UdpLink::UdpLink(int localPort, const string& localAddress, int remotePort,
+UdpLink::UdpLink(unsigned int localPort, const string& localAddress, unsigned int remotePort,
                  const string& remoteAddress) :
-    m_remoteEndpoint(ip::udp::endpoint(ip::make_address(remoteAddress), remotePort)),
-    m_localEndpoint(ip::udp::endpoint(ip::make_address(localAddress), localPort)),
-    m_socket(m_ioContext, ip::udp::endpoint(ip::make_address(localAddress), localPort))
+    m_remoteEndpoint(ip::udp::endpoint(ip::make_address(remoteAddress),
+                                       static_cast<unsigned short>(remotePort))),
+    m_localEndpoint(
+        ip::udp::endpoint(ip::make_address(localAddress), static_cast<unsigned short>(localPort))),
+    m_socket(m_ioContext, ip::udp::endpoint(ip::make_address(localAddress),
+                                            static_cast<unsigned short>(localPort)))
 {
 }
 
@@ -57,12 +60,12 @@ int UdpLink::connect()
     return error.value();
 }
 
-string UdpLink::localAddress() const
+[[maybe_unused]] string UdpLink::localAddress() const
 {
     return m_localEndpoint.address().to_string();
 }
 
-int UdpLink::localPort() const
+[[maybe_unused]] int UdpLink::localPort() const
 {
     return m_localEndpoint.port();
 }
@@ -77,7 +80,7 @@ int UdpLink::errorCode() const
     return m_errorCode.value();
 }
 
-string UdpLink::remoteAddress() const
+[[maybe_unused]] string UdpLink::remoteAddress() const
 {
     return m_remoteEndpoint.address().to_string();
 }
@@ -113,6 +116,8 @@ void UdpLink::asyncReceive(ReceiveHandler handler)
 void UdpLink::asyncSend(std::string_view data, SendHandler handler)
 {
     std::size_t dataSize = data.size();
+    if (dataSize > LOODSMAN_MAX_PACKET_LENGTH)
+        utils::debugPrint("Message that are trying to be send is too big, truncating!");
     m_socket.async_send_to(buffer(data, dataSize), m_remoteEndpoint, socket_base::message_flags(),
                            std::bind(loodsman::UdpLink::asyncSendHandlerWrapper, _1, _2, this,
                                      handler));

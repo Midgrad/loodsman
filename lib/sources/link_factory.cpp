@@ -3,18 +3,23 @@
 #include "udp_link.h"
 #include "utils.h"
 
+#include <boost/system/error_code.hpp>
 #include <string_view>
 
 using namespace loodsman;
 
-LinkFactory::LinkFactory() : m_errorCode()
-{
-}
-
-LinkAsync* LinkFactory::create(LinkType type, int localPort, const std::string& localAddress,
-                               int remotePort, const std::string& remoteAddress)
+LinkAsync* LinkFactory::create(const LinkType type, const int localPort,
+                               const std::string& localAddress, const int remotePort,
+                               const std::string& remoteAddress) noexcept
 {
     LinkAsync* link = nullptr;
+
+    if ((localPort < 0) || (remotePort < 0))
+    {
+        utils::debugPrint("LinkFactory: port number could not be negative!");
+        m_errorCode = boost::system::errc::make_error_code(boost::system::errc::invalid_argument);
+        return nullptr;
+    }
 
     try
     {
@@ -25,16 +30,14 @@ LinkAsync* LinkFactory::create(LinkType type, int localPort, const std::string& 
             break;
         case LinkType::tcp:
             utils::debugPrint("TCP Link type is not implemented");
-            // TODO: sync error codes with boost::system::system_error
-            //            m_errorCode = boost::system::error_code();
+            m_errorCode = boost::system::errc::make_error_code(boost::system::errc::not_supported);
             break;
         case LinkType::serial:
             utils::debugPrint("Serial Link type is not implemented");
-            // TODO: sync error codes with boost::system::system_error
-            //            m_errorCode = boost::system::error_code();
+            m_errorCode = boost::system::errc::make_error_code(boost::system::errc::not_supported);
             break;
         default:
-            //            m_errorCode = boost::system::error_code();
+            m_errorCode = boost::system::errc::make_error_code(boost::system::errc::not_supported);
             utils::debugPrint("Unknown link type");
         }
     }
@@ -47,8 +50,7 @@ LinkAsync* LinkFactory::create(LinkType type, int localPort, const std::string& 
     catch (...)
     {
         utils::debugPrint("Generic error");
-        // TODO: sync error codes with boost::system::system_error
-        //            m_errorCode = boost::system::error_code();
+        m_errorCode = boost::system::errc::make_error_code(boost::system::errc::not_supported);
     }
 
     return link;

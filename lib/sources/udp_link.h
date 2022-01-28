@@ -13,17 +13,11 @@ namespace loodsman
 class UdpLink final : public LinkAsync
 {
 public:
-    explicit UdpLink(int localPort, const std::string& localAddress = "0.0.0.0", int remotePort = 0,
-                     const std::string& remoteAddress = "0.0.0.0");
+    explicit UdpLink(unsigned int localPort, const std::string& localAddress = "0.0.0.0",
+                     unsigned int remotePort = 0, const std::string& remoteAddress = "0.0.0.0");
 
     int open() override;
     int close() override;
-
-    std::string localAddress() const;
-    int localPort() const;
-
-    std::string remoteAddress() const;
-    int remotePort() const;
 
     std::string errorMessage() const override;
     int errorCode() const override;
@@ -45,6 +39,12 @@ public:
 private:
     int bind();
     int connect();
+
+    [[maybe_unused]] std::string localAddress() const;
+    [[maybe_unused]] int localPort() const;
+
+    [[maybe_unused]] std::string remoteAddress() const;
+    [[maybe_unused]] int remotePort() const;
 
     boost::asio::ip::udp::endpoint m_remoteEndpoint;
     boost::asio::ip::udp::endpoint m_localEndpoint;
