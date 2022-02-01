@@ -37,8 +37,8 @@ public:
                                         const SendHandler& handler);
 
 private:
-    std::error_code bind();
-    std::error_code connect();
+    boost::system::error_code bind();
+    boost::system::error_code connect();
 
     [[maybe_unused]] std::string localAddress() const;
     [[maybe_unused]] int localPort() const;

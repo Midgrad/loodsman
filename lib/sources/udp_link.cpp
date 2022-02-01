@@ -43,22 +43,22 @@ void UdpLink::close()
     m_socket.close();
 }
 
-std::error_code UdpLink::bind()
+boost::system::error_code UdpLink::bind()
 {
     m_errorCode = m_socket.bind(m_localEndpoint, m_errorCode);
     if (m_errorCode.value())
         utils::debugPrint(m_errorCode.message());
-    return static_cast<std::error_code>(m_errorCode);
+    return m_errorCode;
 }
 
 // Presumably used to permanently bind socket to a remote address, and prevent changes.
 // may be helpful if we would use immutable objects
-std::error_code UdpLink::connect()
+boost::system::error_code UdpLink::connect()
 {
     m_errorCode = m_socket.connect(m_remoteEndpoint, m_errorCode);
     if (m_errorCode.value())
         utils::debugPrint(m_errorCode.message());
-    return static_cast<std::error_code>(m_errorCode);
+    return m_errorCode;
 }
 
 [[maybe_unused]] string UdpLink::localAddress() const
